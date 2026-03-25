@@ -141,6 +141,12 @@ body { font-family: 'Noto Sans JP', 'Helvetica Neue', 'Hiragino Kaku Gothic ProN
 .table-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 thead th { background: #f9fafb; color: #6b7280; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px; text-align: left; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 1; white-space: nowrap; }
+thead th.th-sort { cursor: pointer; user-select: none; transition: background 0.15s, color 0.15s; }
+thead th.th-sort:hover { background: #e5e7eb; color: #374151; }
+thead th.th-sort.sorted { background: #dbeafe; color: #1d4ed8; }
+.rank-view-toggle { display:flex;gap:4px; }
+.rank-view-btn { padding:5px 14px;border:1.5px solid #d1d5db;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;background:#f3f4f6;color:#374151;font-family:inherit;transition:all 0.15s; }
+.rank-view-btn.active { background:#3b82f6;color:#fff;border-color:#3b82f6; }
 tbody tr { border-bottom: 1px solid #f3f4f6; transition: background 0.1s; }
 tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: #f9fafb; }
@@ -952,8 +958,22 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
         </div>
       </div>
     </div>
+    <!-- 画像URL取得 -->
+    <div style="margin-top:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:4px;">🖼️ 商品画像URL一括取得</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.7;">pbo.korecow.jp にログイン中にクリック<br>メーカー品番 + 画像URL の CSV を自動DL</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="bm-drag-label">⬇️ ブックマークバーへドラッグ</div>
+        <a class="bm-link" style="background:%237c3aed;color:%23fff;border-color:%23c4b5fd;" href="javascript:(async function(){var t=document.createElement('div');t.style='position:fixed;top:16px;right:16px;background:%237c3aed;color:%23fff;padding:12px 22px;border-radius:10px;font-size:14px;font-weight:700;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.3)';t.textContent='\u23F3 \u753B\u50FEURL\u53D6\u5F97\u4E2D...';document.body.appendChild(t);try{var all=[],page=0;while(true){var res=await fetch('/api/products?limit=500&page='+page);var j=await res.json();var items=(j&&j.result&&j.result.items)||[];if(items.length===0)break;all=all.concat(items);t.textContent='\u23F3 \u53D6\u5F97\u4E2D '+all.length+'\u4EF6...';page++;}var rows=all.filter(function(i){return i.makerProductNo&&i.imageUrl;}).map(function(i){return'\x22'+i.makerProductNo+'\x22,\x22'+i.imageUrl+'\x22';});var csv='\uFEFF\u30E1\u30FC\u30AB\u30FC\u54C1\u756A,\u753B\u50CFURL\n'+rows.join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='\u5546\u54C1\u753B\u50CFURL_'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'.csv';a.click();t.style.background='%23059669';t.textContent='\u2705 '+rows.length+'\u4EF6 CSV\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u5B8C\u4E86\uFF01\u30A2\u30D7\u30EA\u306B\u30C9\u30ED\u30C3\u30D7';setTimeout(function(){t.remove();},4000);}catch(e){t.style.background='%23dc2626';t.textContent='\u274C '+e.message;setTimeout(function(){t.remove();},5000);}})();" draggable="true">
+          🖼️ 商品画像URL CSV取得
+        </a>
+        <div style="font-size:10px;color:rgba(255,255,255,0.35);">pbo.korecow.jp でクリック → 🖼️欄にドロップ</div>
+      </div>
+    </div>
     <div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.45);text-align:center;">
-      💡 両方をブックマークバーに登録しておけば、次回からは 2クリック → 2ドロップ で分析完了
+      💡 3つをブックマークバーに登録しておけば、次回からは 3クリック → ドロップ で在庫＋画像の分析が完了
     </div>
   </div>
 
@@ -1127,6 +1147,72 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
   <!-- ===== ZOZO売上ランク分析 ===== -->
   <div id="rankSection" style="display:none;">
     <div class="step-label" style="margin-top:28px;margin-bottom:12px;">🏆 ZOZO売上ランク分析（ZOZOファイルのみで実行）</div>
+
+    <!-- 輸送中在庫アップロード -->
+    <div class="card" style="margin-bottom:16px;border:2px dashed #bfdbfe;background:#f0f7ff;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <div style="font-size:13px;font-weight:700;color:#1d4ed8;">🚚 輸送中在庫（複数ファイル可）</div>
+        <button id="transitClearAllBtn" onclick="clearTransitData()" style="display:none;background:none;border:1px solid #fca5a5;border-radius:6px;padding:4px 12px;font-size:11px;color:#ef4444;cursor:pointer;font-family:inherit;font-weight:600;">✕ 全クリア</button>
+      </div>
+      <!-- ドロップゾーン -->
+      <div id="transitDropZone"
+        onclick="document.getElementById('transitFileInput').click()"
+        ondragover="event.preventDefault();this.style.background='#dbeafe';this.style.borderColor='#3b82f6'"
+        ondragleave="this.style.background='#fff';this.style.borderColor='#93c5fd'"
+        ondrop="event.preventDefault();this.style.background='#fff';this.style.borderColor='#93c5fd';[...event.dataTransfer.files].forEach(f=>handleTransitFile(f))"
+        style="border:2px dashed #93c5fd;border-radius:8px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;background:#fff;transition:all 0.15s;">
+        <span style="font-size:22px;">📂</span>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#3b82f6;">クリックまたはドラッグ＆ドロップ（複数同時OK）</div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px;">納品書 Excel（.xlsx / .xls）— お客様SKU・商品数 列を自動検出</div>
+        </div>
+      </div>
+      <input type="file" id="transitFileInput" accept=".xlsx,.xls" multiple style="display:none" onchange="[...this.files].forEach(f=>handleTransitFile(f));this.value=''">
+      <!-- 取り込み済みファイルリスト -->
+      <div id="transitFileList" style="display:none;margin-top:10px;"></div>
+    </div>
+
+    <!-- 商品画像登録 -->
+    <div class="card" style="margin-bottom:16px;border:2px dashed #e9d5ff;background:#faf5ff;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <div style="font-size:13px;font-weight:700;color:#7c3aed;">🖼️ 商品画像（任意）</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div id="imgStoreBadge" style="display:none;font-size:11px;font-weight:700;color:#7c3aed;background:#ede9fe;border:1px solid #c4b5fd;border-radius:6px;padding:3px 10px;"></div>
+          <button id="imgStoreClearBtn" onclick="clearImageStore()" style="display:none;background:none;border:1px solid #fca5a5;border-radius:6px;padding:4px 12px;font-size:11px;color:#ef4444;cursor:pointer;font-family:inherit;font-weight:600;">✕ クリア</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <!-- 画像ファイルアップ -->
+        <div id="imgFileDropZone"
+          onclick="document.getElementById('imgFileInput').click()"
+          ondragover="event.preventDefault();this.style.background='#ede9fe'"
+          ondragleave="this.style.background='#fff'"
+          ondrop="event.preventDefault();this.style.background='#fff';handleImageFiles(event.dataTransfer.files)"
+          style="border:2px dashed #c4b5fd;border-radius:8px;padding:12px;cursor:pointer;background:#fff;transition:background 0.15s;text-align:center;">
+          <div style="font-size:22px;margin-bottom:4px;">🗂️</div>
+          <div style="font-size:12px;font-weight:600;color:#7c3aed;">画像ファイルをドロップ</div>
+          <div style="font-size:10px;color:#9ca3af;margin-top:3px;">JPG/PNG/WEBP — ファイル名＝メーカー品番</div>
+          <div style="font-size:10px;color:#9ca3af;">例: MN9039-BLK-XL.jpg</div>
+        </div>
+        <input type="file" id="imgFileInput" accept="image/*" multiple style="display:none" onchange="handleImageFiles(this.files);this.value=''">
+        <!-- URL CSVアップ -->
+        <div id="imgCsvDropZone"
+          onclick="document.getElementById('imgCsvInput').click()"
+          ondragover="event.preventDefault();this.style.background='#ede9fe'"
+          ondragleave="this.style.background='#fff'"
+          ondrop="event.preventDefault();this.style.background='#fff';handleImageCSV(event.dataTransfer.files[0])"
+          style="border:2px dashed #c4b5fd;border-radius:8px;padding:12px;cursor:pointer;background:#fff;transition:background 0.15s;text-align:center;">
+          <div style="font-size:22px;margin-bottom:4px;">📋</div>
+          <div style="font-size:12px;font-weight:600;color:#7c3aed;">URL一覧CSV をドロップ</div>
+          <div style="font-size:10px;color:#9ca3af;margin-top:3px;">列: メーカー品番, 画像URL</div>
+          <div style="font-size:10px;color:#9ca3af;">ZOZOのCDN URLを一括登録</div>
+        </div>
+        <input type="file" id="imgCsvInput" accept=".csv,.txt" style="display:none" onchange="handleImageCSV(this.files[0]);this.value=''">
+      </div>
+      <!-- プレビュー -->
+      <div id="imgStorePreview" style="display:none;margin-top:10px;"></div>
+    </div>
+
     <!-- ランク基準設定 -->
     <div class="card" style="margin-bottom:16px;">
       <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:12px;">📐 ランク基準（カスタマイズ可能）</div>
@@ -1157,6 +1243,13 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
         <input type="number" id="rankTargetDays" value="30" min="7" max="180" style="width:70px;border:1.5px solid #e5e7eb;border-radius:6px;padding:5px 8px;font-size:13px;">
         <span style="font-size:12px;color:#6b7280;">日分（補充推奨の基準）</span>
         <button onclick="runRankAnalysis()" style="background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:7px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 再分析</button>
+        <div style="margin-left:12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;color:#6b7280;">表示単位：</span>
+          <div class="rank-view-toggle">
+            <button id="rankViewSku" class="rank-view-btn active" onclick="setRankView('sku')">SKU単位</button>
+            <button id="rankViewBrand" class="rank-view-btn" onclick="setRankView('brand')">品番単位</button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- サマリー -->
@@ -2182,6 +2275,12 @@ const EMBEDDED_PRESET = {
 // ===== グローバル =====
 let ckbData = null;
 let zozoData = null;
+let transitData = {};     // 輸送中在庫データ 合算 (key: お客様sku = メーカー品番 → qty)
+let transitFiles = [];    // 取り込み済みファイル情報 [{name, skuCount, totalQty, data}]
+let imageStore   = {};    // 商品画像 (key: メーカー品番 → URL or base64 dataURL)
+let rankViewMode = 'sku'; // 'sku' | 'brand'
+let rankSortKey  = 'sales_30d';
+let rankSortDir  = 'desc';
 let analysisResult = null;
 let productDB = null;   // 商品マスターDB (key: メーカー品番)
 let shippingQty = {};   // {sku: qty} 発送数入力値
@@ -3631,6 +3730,205 @@ function showAlert(msg) {
   const el = document.getElementById('alertBox');
   el.innerHTML = msg; el.style.display = msg ? 'block' : 'none';
 }
+// ===== 輸送中在庫ファイル読み込み（複数対応） =====
+function handleTransitFile(file) {
+  if (!file) return;
+  // 同名ファイルは上書き（再読み込み対応）
+  const existIdx = transitFiles.findIndex(f => f.name === file.name);
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      // 「お客様」列を含むシートを優先
+      let targetSheet = null;
+      for (const sn of wb.SheetNames) {
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, defval: '' });
+        if (rows.length < 2) continue;
+        const hdr = rows[0].map(v => String(v).trim().toLowerCase());
+        if (hdr.some(h => h.includes('お客様'))) { targetSheet = sn; break; }
+      }
+      if (!targetSheet) targetSheet = wb.SheetNames[0];
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[targetSheet], { header: 1, defval: '' });
+      const hdr = rows[0].map(v => String(v).trim());
+      const col = name => hdr.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+      const cSku = col('お客様');
+      let cQty = col('商品数'); if (cQty < 0) cQty = col('納品数'); if (cQty < 0) cQty = col('数量');
+      if (cSku < 0) {
+        showAlert('⚠️ [' + file.name + ']\n「お客様SKU」列が見つかりません。\n検出列: ' + hdr.filter(Boolean).slice(0,10).join(' / '));
+        return;
+      }
+      if (cQty < 0) {
+        showAlert('⚠️ [' + file.name + ']\n数量列（商品数・納品数・数量）が見つかりません。\n検出列: ' + hdr.filter(Boolean).slice(0,10).join(' / '));
+        return;
+      }
+      // このファイルのデータを収集
+      const fileData = {};
+      let skuCount = 0, totalQty = 0;
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        const sku = String(r[cSku] || '').trim();
+        const qty = parseInt(r[cQty]) || 0;
+        if (!sku || qty <= 0) continue;
+        fileData[sku] = (fileData[sku] || 0) + qty;
+        skuCount++;
+        totalQty += qty;
+      }
+      const fileInfo = { name: file.name, skuCount, totalQty, data: fileData };
+      // 同名ファイルなら置換、なければ追加
+      if (existIdx >= 0) {
+        transitFiles[existIdx] = fileInfo;
+      } else {
+        transitFiles.push(fileInfo);
+      }
+      // transitData を全ファイルから再合算
+      _rebuildTransitData();
+      _updateTransitUI();
+      if (zozoData) runRankAnalysis();
+    } catch(err) {
+      showAlert('⚠️ [' + file.name + '] 読み込みに失敗しました: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function _rebuildTransitData() {
+  transitData = {};
+  for (const f of transitFiles) {
+    for (const [sku, qty] of Object.entries(f.data)) {
+      transitData[sku] = (transitData[sku] || 0) + qty;
+    }
+  }
+}
+function removeTransitFile(idx) {
+  transitFiles.splice(idx, 1);
+  _rebuildTransitData();
+  _updateTransitUI();
+  if (zozoData) runRankAnalysis();
+}
+function clearTransitData() {
+  transitFiles = [];
+  transitData = {};
+  _updateTransitUI();
+  if (zozoData) runRankAnalysis();
+}
+function _updateTransitUI() {
+  const listEl = document.getElementById('transitFileList');
+  const clearBtn = document.getElementById('transitClearAllBtn');
+  if (transitFiles.length === 0) {
+    listEl.style.display = 'none';
+    clearBtn.style.display = 'none';
+    return;
+  }
+  clearBtn.style.display = 'inline-block';
+  const totalSku = Object.keys(transitData).length;
+  const totalQty = Object.values(transitData).reduce((a, b) => a + b, 0);
+  let html = `<div style="border-top:1px solid #bfdbfe;padding-top:8px;">`;
+  // ファイルごとの行
+  transitFiles.forEach((f, i) => {
+    html += `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dashed #e0ecff;">
+      <span style="font-size:14px;">📄</span>
+      <span style="flex:1;font-size:12px;color:#374151;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${f.name}">${f.name}</span>
+      <span style="font-size:11px;color:#6b7280;white-space:nowrap;">${f.skuCount}行 ／ <b style="color:#1d4ed8;">${f.totalQty}点</b></span>
+      <button onclick="removeTransitFile(${i})" style="background:none;border:none;color:#d1d5db;font-size:14px;cursor:pointer;padding:0 2px;line-height:1;" title="削除">✕</button>
+    </div>`;
+  });
+  // 合計行
+  if (transitFiles.length > 1) {
+    html += `<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:6px 0 2px;font-size:12px;font-weight:700;color:#1d4ed8;">
+      <span>合計 ${transitFiles.length}ファイル</span>
+      <span style="background:#dbeafe;border:1px solid #93c5fd;border-radius:6px;padding:2px 10px;">${totalSku}SKU ／ ${totalQty}点</span>
+    </div>`;
+  }
+  html += `</div>`;
+  listEl.innerHTML = html;
+  listEl.style.display = 'block';
+}
+// ===== 商品画像管理 =====
+function handleImageFiles(files) {
+  if (!files || files.length === 0) return;
+  let count = 0;
+  const remaining = files.length;
+  Array.from(files).forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    // ファイル名（拡張子なし）をメーカー品番として使用
+    const sku = file.name.replace(/\.[^.]+$/, '').trim();
+    if (!sku) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      imageStore[sku] = e.target.result;
+      count++;
+      if (count === remaining || count % 10 === 0) {
+        _updateImageStoreUI();
+        if (zozoData) runRankAnalysis();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function handleImageCSV(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result.replace(/^\uFEFF/, ''); // BOM除去
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length < 2) { showAlert('⚠️ CSVが空か、データが1行もありません。'); return; }
+    // ヘッダー行を解析（メーカー品番列と画像URL列を探す）
+    const hdrs = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
+    const cSku = hdrs.findIndex(h => h.includes('メーカー品番') || h.toLowerCase().includes('sku') || h.includes('品番'));
+    const cUrl = hdrs.findIndex(h => h.includes('画像') || h.toLowerCase().includes('url') || h.toLowerCase().includes('image'));
+    if (cSku < 0 || cUrl < 0) {
+      showAlert('⚠️ CSVに「メーカー品番」と「画像URL」の列が必要です。\n検出した列: ' + hdrs.join(' / '));
+      return;
+    }
+    let added = 0;
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g,''));
+      const sku = cols[cSku] || '';
+      const url = cols[cUrl] || '';
+      if (!sku || !url) continue;
+      imageStore[sku] = url;
+      added++;
+    }
+    _updateImageStoreUI();
+    showAlert('');
+    if (zozoData) runRankAnalysis();
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+function clearImageStore() {
+  imageStore = {};
+  _updateImageStoreUI();
+  if (zozoData) runRankAnalysis();
+}
+function _updateImageStoreUI() {
+  const count = Object.keys(imageStore).length;
+  const badge = document.getElementById('imgStoreBadge');
+  const clearBtn = document.getElementById('imgStoreClearBtn');
+  const preview = document.getElementById('imgStorePreview');
+  if (count === 0) {
+    badge.style.display = 'none';
+    clearBtn.style.display = 'none';
+    preview.style.display = 'none';
+    return;
+  }
+  badge.style.display = 'inline-block';
+  badge.textContent = `🖼️ ${count}商品 登録済`;
+  clearBtn.style.display = 'inline-block';
+  // サムネイルプレビュー（最大20件）
+  const entries = Object.entries(imageStore).slice(0, 20);
+  let html = `<div style="border-top:1px solid #e9d5ff;padding-top:8px;">
+    <div style="font-size:11px;color:#7c3aed;font-weight:600;margin-bottom:6px;">プレビュー（最大20件）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">`;
+  for (const [sku, url] of entries) {
+    html += `<div style="position:relative;display:inline-block;" title="${sku}">
+      <img src="${url}" width="44" height="44" style="object-fit:cover;border-radius:6px;border:1px solid #e9d5ff;display:block;"
+        onerror="this.style.border='1px solid #fca5a5';this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'44\\' height=\\'44\\'><rect fill=\\'%23f9fafb\\' width=\\'44\\' height=\\'44\\'/><text y=\\'28\\' x=\\'12\\' font-size=\\'18\\'>📷</text></svg>'">
+    </div>`;
+  }
+  if (count > 20) html += `<div style="width:44px;height:44px;border:1px dashed #c4b5fd;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#9ca3af;">+${count-20}</div>`;
+  html += `</div></div>`;
+  preview.innerHTML = html;
+  preview.style.display = 'block';
+}
 // ===== ZOZO売上ランク分析 =====
 function runRankAnalysis() {
   if (!zozoData) return;
@@ -3645,13 +3943,16 @@ function runRankAnalysis() {
     else if (d.sales_30d >= sA30 || d.sales_7d >= sA7) rank = 'A';
     else if (d.sales_30d >= 1   || d.sales_7d >= 1)    rank = 'B';
     else rank = 'C';
+    // 輸送中在庫を加算（お客様sku = メーカー品番 でマッチ）
+    const transit_qty = transitData[sku] || 0;
+    const effective_stock = (d.zozo_stock || 0) + transit_qty;
     const daily30   = d.sales_30d / 30;
     const daily7    = d.sales_7d  / 7;
     const dailyRate = Math.max(daily30, daily7);
-    const daysLeft  = dailyRate > 0 ? Math.floor(d.zozo_stock / dailyRate) : Infinity;
+    const daysLeft  = dailyRate > 0 ? Math.floor(effective_stock / dailyRate) : Infinity;
     const targetStock = Math.ceil(dailyRate * targetDays);
-    const addNeeded   = Math.max(0, targetStock - d.zozo_stock);
-    return { sku, ...d, rank, dailyRate, daysLeft, addNeeded };
+    const addNeeded   = Math.max(0, targetStock - effective_stock);
+    return { sku, ...d, rank, dailyRate, daysLeft, addNeeded, transit_qty, effective_stock };
   });
   const groups = { S: [], A: [], B: [], C: [] };
   for (const it of items) groups[it.rank].push(it);
@@ -3683,54 +3984,186 @@ function runRankAnalysis() {
   document.getElementById('rankTabBtnB').textContent     = '📦 B (' + groups.B.length + ')';
   document.getElementById('rankTabBtnC').textContent     = '💤 C (' + groups.C.length + ')';
   document.getElementById('rankTabBtnStock').textContent = '⚠️ 補充推奨 (' + stockItems.length + ')';
-  // テーブル描画
-  const rankCols = ['商品名','カラー','サイズ','販売可能数','30日売上','7日売上','日次ペース','在庫残り日数'];
-  document.getElementById('rankSTable').innerHTML     = _renderRankRows(groups.S, rankCols);
-  document.getElementById('rankATable').innerHTML     = _renderRankRows(groups.A, rankCols);
-  document.getElementById('rankBTable').innerHTML     = _renderRankRows(groups.B, rankCols);
-  document.getElementById('rankCTable').innerHTML     = _renderRankRows(groups.C, rankCols);
-  document.getElementById('rankStockTable').innerHTML = _renderStockRows(stockItems);
+  // データを保存してテーブル描画
   window._rankGroups = groups;
   window._stockItems = stockItems;
+  _renderAllRankTables();
   document.getElementById('rankSection').style.display = 'block';
 }
-function _renderRankRows(items, cols) {
+function _imgCell(sku) {
+  const url = imageStore[sku];
+  if (!url) return '';
+  return `<td style="width:52px;padding:4px 6px;"><img src="${url}" width="44" height="44"
+    style="object-fit:cover;border-radius:6px;border:1px solid #e9d5ff;display:block;background:#f9fafb;"
+    onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2244%22 height=%2244%22><rect fill=%22%23f3f4f6%22 width=%2244%22 height=%2244%22/><text y=%2228%22 x=%2210%22 font-size=%2220%22>📷</text></svg>'"></td>`;
+}
+// ===== ランク分析: ソート・表示モード =====
+function parseSKUParts(sku) {
+  const parts = (sku || '').split('-');
+  if (parts.length >= 3) return { brand: parts[0], color: parts.slice(1, -1).join('-'), size: parts[parts.length - 1] };
+  if (parts.length === 2) return { brand: parts[0], color: '', size: parts[1] };
+  return { brand: sku, color: '', size: '' };
+}
+function _applyRankSort(items) {
+  if (!rankSortKey) return [...items];
+  return [...items].sort((a, b) => {
+    let va = a[rankSortKey], vb = b[rankSortKey];
+    if (va === Infinity) va = 9999999;
+    if (vb === Infinity) vb = 9999999;
+    if (typeof va === 'string') return rankSortDir === 'asc' ? va.localeCompare(vb, 'ja') : vb.localeCompare(va, 'ja');
+    va = va ?? 0; vb = vb ?? 0;
+    return rankSortDir === 'asc' ? va - vb : vb - va;
+  });
+}
+function _groupByBrand(items) {
+  const targetDays = parseInt(document.getElementById('rankTargetDays').value) || 30;
+  const map = {};
+  for (const it of items) {
+    const { brand } = parseSKUParts(it.sku);
+    if (!map[brand]) {
+      map[brand] = { sku: brand, brand_no: brand, product: it.product, skuCount: 0, skus: [],
+        zozo_stock: 0, transit_qty: 0, effective_stock: 0,
+        sales_30d: 0, sales_7d: 0, dailyRate: 0,
+        rank: it.rank, daysLeft: 0, addNeeded: 0 };
+    }
+    const g = map[brand];
+    g.skuCount++; g.skus.push(it.sku);
+    g.zozo_stock      += (it.zozo_stock || 0);
+    g.transit_qty     += (it.transit_qty || 0);
+    g.effective_stock += (it.effective_stock || 0);
+    g.sales_30d       += it.sales_30d;
+    g.sales_7d        += it.sales_7d;
+    g.dailyRate       += it.dailyRate;
+    const ro = { S:0, A:1, B:2, C:3 };
+    if (ro[it.rank] < ro[g.rank]) g.rank = it.rank;
+  }
+  for (const g of Object.values(map)) {
+    g.daysLeft  = g.dailyRate > 0 ? Math.floor(g.effective_stock / g.dailyRate) : Infinity;
+    g.addNeeded = Math.max(0, Math.ceil(g.dailyRate * targetDays) - g.effective_stock);
+  }
+  return Object.values(map);
+}
+function _sortTh(label, key) {
+  const active = rankSortKey === key;
+  const arrow  = active ? (rankSortDir === 'desc' ? '▼' : '▲') : '⇅';
+  const cls    = 'th-sort' + (active ? ' sorted' : '');
+  return `<th class="${cls}" onclick="sortRank('${key}')">${label}&nbsp;<span style="font-size:9px;opacity:${active?'1':'0.35'};">${arrow}</span></th>`;
+}
+function sortRank(key) {
+  rankSortDir = (rankSortKey === key && rankSortDir === 'desc') ? 'asc' : 'desc';
+  rankSortKey = key;
+  _renderAllRankTables();
+}
+function setRankView(mode) {
+  rankViewMode = mode;
+  document.getElementById('rankViewSku').classList.toggle('active', mode === 'sku');
+  document.getElementById('rankViewBrand').classList.toggle('active', mode === 'brand');
+  _renderAllRankTables();
+}
+function _renderAllRankTables() {
+  if (!window._rankGroups) return;
+  const hasTransit = transitData && Object.keys(transitData).length > 0;
+  const hasImages  = Object.keys(imageStore).length > 0;
+  const stockLabel = hasTransit ? '合計在庫（販売可能＋輸送中）' : '販売可能数';
+  const isBrand    = rankViewMode === 'brand';
+  const prep = grp => _applyRankSort(isBrand ? _groupByBrand(grp) : grp);
+  document.getElementById('rankSTable').innerHTML     = _renderRankRows(prep(window._rankGroups.S), stockLabel, hasImages, isBrand);
+  document.getElementById('rankATable').innerHTML     = _renderRankRows(prep(window._rankGroups.A), stockLabel, hasImages, isBrand);
+  document.getElementById('rankBTable').innerHTML     = _renderRankRows(prep(window._rankGroups.B), stockLabel, hasImages, isBrand);
+  document.getElementById('rankCTable').innerHTML     = _renderRankRows(prep(window._rankGroups.C), stockLabel, hasImages, isBrand);
+  const stockBase = isBrand
+    ? _groupByBrand([...window._rankGroups.S, ...window._rankGroups.A]).filter(g => g.addNeeded > 0)
+    : window._stockItems;
+  document.getElementById('rankStockTable').innerHTML = _renderStockRows(_applyRankSort(stockBase), isBrand);
+}
+function _renderRankRows(items, stockLabel, hasImages, isBrand) {
   if (!items.length) return '<div style="padding:28px;text-align:center;color:#9ca3af;font-size:13px;">該当商品なし</div>';
-  const hdr = cols.map(c => `<th>${c}</th>`).join('');
+  const imgTh = hasImages ? '<th style="width:52px;"></th>' : '';
+  const hdr = isBrand
+    ? imgTh + _sortTh('品番','sku') + _sortTh('商品名','product') + _sortTh('SKU数','skuCount') + _sortTh(stockLabel,'effective_stock') + _sortTh('30日売上','sales_30d') + _sortTh('7日売上','sales_7d') + _sortTh('日次ペース','dailyRate') + _sortTh('在庫残り日数','daysLeft')
+    : imgTh + _sortTh('メーカー品番','sku') + _sortTh('商品名','product') + _sortTh('カラー','color') + _sortTh('サイズ','size') + _sortTh(stockLabel,'effective_stock') + _sortTh('30日売上','sales_30d') + _sortTh('7日売上','sales_7d') + _sortTh('日次ペース','dailyRate') + _sortTh('在庫残り日数','daysLeft');
   const rows = items.map(it => {
-    const dl   = it.daysLeft === Infinity ? '∞' : it.daysLeft + '日';
-    const dlC  = it.daysLeft < 7 ? '#dc2626' : it.daysLeft < 14 ? '#d97706' : '#374151';
-    return `<tr>
-      <td>${it.product}</td><td>${it.color}</td><td>${it.size}</td>
-      <td style="text-align:right;">${it.zozo_stock}</td>
-      <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
-      <td style="text-align:right;">${it.sales_7d}</td>
-      <td style="text-align:right;color:#6b7280;">${it.dailyRate.toFixed(2)}/日</td>
-      <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
-    </tr>`;
+    const dl  = it.daysLeft === Infinity ? '∞' : it.daysLeft + '日';
+    const dlC = it.daysLeft < 7 ? '#dc2626' : it.daysLeft < 14 ? '#d97706' : '#374151';
+    const stockCell = it.transit_qty > 0
+      ? `<td style="text-align:right;"><span style="font-weight:700;">${it.effective_stock}</span><br><span style="font-size:10px;color:#6b7280;">${it.zozo_stock}+<span style="color:#1d4ed8;font-weight:600;">🚚${it.transit_qty}</span></span></td>`
+      : `<td style="text-align:right;">${it.effective_stock ?? it.zozo_stock}</td>`;
+    if (isBrand) {
+      const repSku  = it.skus && it.skus.length ? it.skus[0] : it.sku;
+      return `<tr>
+        ${hasImages ? _imgCell(repSku) : ''}
+        <td style="font-size:11px;color:#6b7280;font-family:monospace;white-space:nowrap;">${it.brand_no||it.sku}</td>
+        <td>${it.product}</td>
+        <td style="text-align:right;">${it.skuCount}</td>
+        ${stockCell}
+        <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
+        <td style="text-align:right;">${it.sales_7d}</td>
+        <td style="text-align:right;color:#6b7280;">${it.dailyRate.toFixed(2)}/日</td>
+        <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
+      </tr>`;
+    } else {
+      return `<tr>
+        ${hasImages ? _imgCell(it.sku) : ''}
+        <td style="font-size:11px;color:#6b7280;font-family:monospace;white-space:nowrap;">${it.sku}</td>
+        <td>${it.product}</td><td>${it.color}</td><td>${it.size}</td>
+        ${stockCell}
+        <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
+        <td style="text-align:right;">${it.sales_7d}</td>
+        <td style="text-align:right;color:#6b7280;">${it.dailyRate.toFixed(2)}/日</td>
+        <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
+      </tr>`;
+    }
   }).join('');
   return `<table><thead><tr>${hdr}</tr></thead><tbody>${rows}</tbody></table>`;
 }
-function _renderStockRows(items) {
+function _renderStockRows(items, isBrand = false) {
   if (!items.length) return '<div style="padding:28px;text-align:center;color:#059669;font-size:13px;">✅ 在庫補充が必要な商品はありません</div>';
-  const hdr = ['商品名','カラー','サイズ','ランク','販売可能数','30日売上','7日売上','在庫残り日数','推奨追加数'].map(c => `<th>${c}</th>`).join('');
+  const hasTransit = transitData && Object.keys(transitData).length > 0;
+  const hasImages  = Object.keys(imageStore).length > 0;
+  const stockHdr   = hasTransit ? '合計在庫（販売可能＋輸送中）' : '販売可能数';
+  const imgTh      = hasImages ? '<th style="width:52px;"></th>' : '';
   const rBadge = r => {
     const map = { S:'background:#f0fdf4;color:#059669;border:1px solid #6ee7b7;', A:'background:#eff6ff;color:#2563eb;border:1px solid #93c5fd;' };
     return `<span style="${map[r]||''}padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;">${r}</span>`;
   };
+  const skuColHdr = isBrand
+    ? _sortTh('品番','sku') + _sortTh('商品名','product') + _sortTh('SKU数','skuCount')
+    : _sortTh('メーカー品番','sku') + _sortTh('商品名','product') + _sortTh('カラー','color') + _sortTh('サイズ','size');
+  const hdr = imgTh + skuColHdr + '<th>ランク</th>' + _sortTh(stockHdr,'effective_stock') + _sortTh('30日売上','sales_30d') + _sortTh('7日売上','sales_7d') + _sortTh('在庫残り日数','daysLeft') + _sortTh('推奨追加数','addNeeded');
   const rows = items.map(it => {
     const dl  = it.daysLeft === Infinity ? '∞' : it.daysLeft + '日';
     const dlC = it.daysLeft < 7 ? '#dc2626' : it.daysLeft < 14 ? '#d97706' : '#374151';
     const bg  = it.daysLeft < 7 ? 'background:#fff5f5;' : it.daysLeft < 14 ? 'background:#fffbeb;' : '';
-    return `<tr style="${bg}">
-      <td>${it.product}</td><td>${it.color}</td><td>${it.size}</td>
-      <td style="text-align:center;">${rBadge(it.rank)}</td>
-      <td style="text-align:right;">${it.zozo_stock}</td>
-      <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
-      <td style="text-align:right;">${it.sales_7d}</td>
-      <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
-      <td style="text-align:right;font-weight:800;color:#dc2626;">+${it.addNeeded}</td>
-    </tr>`;
+    const stockCell = it.transit_qty > 0
+      ? `<td style="text-align:right;"><span style="font-weight:700;">${it.effective_stock}</span><br><span style="font-size:10px;color:#6b7280;">${it.zozo_stock}+<span style="color:#1d4ed8;font-weight:600;">🚚${it.transit_qty}</span></span></td>`
+      : `<td style="text-align:right;">${it.effective_stock ?? it.zozo_stock}</td>`;
+    if (isBrand) {
+      const repSku = it.skus && it.skus.length ? it.skus[0] : it.sku;
+      return `<tr style="${bg}">
+        ${hasImages ? _imgCell(repSku) : ''}
+        <td style="font-size:11px;color:#6b7280;font-family:monospace;white-space:nowrap;">${it.brand_no||it.sku}</td>
+        <td>${it.product}</td>
+        <td style="text-align:right;">${it.skuCount}</td>
+        <td style="text-align:center;">${rBadge(it.rank)}</td>
+        ${stockCell}
+        <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
+        <td style="text-align:right;">${it.sales_7d}</td>
+        <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
+        <td style="text-align:right;font-weight:800;color:#dc2626;">+${it.addNeeded}</td>
+      </tr>`;
+    } else {
+      return `<tr style="${bg}">
+        ${hasImages ? _imgCell(it.sku) : ''}
+        <td style="font-size:11px;color:#6b7280;font-family:monospace;white-space:nowrap;">${it.sku}</td>
+        <td>${it.product}</td><td>${it.color}</td><td>${it.size}</td>
+        <td style="text-align:center;">${rBadge(it.rank)}</td>
+        ${stockCell}
+        <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
+        <td style="text-align:right;">${it.sales_7d}</td>
+        <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
+        <td style="text-align:right;font-weight:800;color:#dc2626;">+${it.addNeeded}</td>
+      </tr>`;
+    }
   }).join('');
   return `<table><thead><tr>${hdr}</tr></thead><tbody>${rows}</tbody></table>`;
 }
@@ -3743,10 +4176,15 @@ function switchRankTab(e, tab) {
 function exportRankCSV() {
   if (!window._rankGroups) return;
   const all = [...window._rankGroups.S, ...window._rankGroups.A, ...window._rankGroups.B, ...window._rankGroups.C];
-  const hdr = ['ランク','商品名','カラー','サイズ','メーカー品番','販売可能数','30日売上','7日売上','日次ペース(/日)','在庫残り日数','推奨追加数'];
+  const hasTransit = transitData && Object.keys(transitData).length > 0;
+  const hdr = ['ランク','商品名','カラー','サイズ','メーカー品番','販売可能数',
+    ...(hasTransit ? ['輸送中在庫','合計在庫'] : []),
+    '30日売上','7日売上','日次ペース(/日)','在庫残り日数','推奨追加数'];
   const rows = all.map(it => [
     it.rank, it.product, it.color, it.size, it.sku,
-    it.zozo_stock, it.sales_30d, it.sales_7d,
+    it.zozo_stock,
+    ...(hasTransit ? [it.transit_qty || 0, it.effective_stock || it.zozo_stock] : []),
+    it.sales_30d, it.sales_7d,
     it.dailyRate.toFixed(2),
     it.daysLeft === Infinity ? '' : it.daysLeft,
     it.addNeeded || 0,
