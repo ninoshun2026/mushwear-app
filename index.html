@@ -196,6 +196,16 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
 /* 残り在庫ヒント */
 .hint-box { background: #f0fdf4; border: 1px solid #a7f3d0; border-radius: 8px; padding: 10px 16px; margin-bottom: 12px; font-size: 13px; color: #065f46; }
 #results { display: none; }
+/* ===== ZOZO売上ランク分析 ===== */
+#rankSection { margin-top: 28px; }
+.rtab { padding: 8px 16px; border: none; background: none; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.rtab:hover { color: #374151; }
+.rtab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+.rtab-content { display: none; }
+.rtab-content.active { display: block; }
+.rank-setting-card { border: 2px solid; border-radius: 8px; padding: 10px 14px; }
+.rank-summary-card { border-radius: 10px; padding: 14px 16px; text-align: center; }
+.rank-count { font-size: 28px; font-weight: 800; }
 .footer { text-align: center; padding: 18px 28px; font-size: 11px; color: #9ca3af; background: #fff; border-top: 1px solid #e5e7eb; flex-shrink: 0; }
 /* ===== ダッシュボード ===== */
 .dash-page-title { font-size: 20px; font-weight: 800; color: #1f2937; margin-bottom: 4px; }
@@ -1113,6 +1123,79 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
     <div class="empty-text">ファイルをアップロードして分析を開始してください</div>
     <div class="empty-sub">CKB在庫ファイル（.xls）とZOZO在庫日報（.csv）の2つが必要です</div>
   </div>
+
+  <!-- ===== ZOZO売上ランク分析 ===== -->
+  <div id="rankSection" style="display:none;">
+    <div class="step-label" style="margin-top:28px;margin-bottom:12px;">🏆 ZOZO売上ランク分析（ZOZOファイルのみで実行）</div>
+    <!-- ランク基準設定 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:12px;">📐 ランク基準（カスタマイズ可能）</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;">
+        <div class="rank-setting-card" style="border-color:#10b981;background:#f0fdf4;">
+          <div style="font-size:13px;font-weight:800;color:#059669;margin-bottom:8px;">🏆 S ランク（売れている）</div>
+          <div style="font-size:11px;color:#6b7280;margin-bottom:4px;">30日売上 ≥ <input type="number" id="rankS30" value="10" min="1" style="width:52px;border:1px solid #d1d5db;border-radius:4px;padding:2px 6px;font-size:12px;"> 個</div>
+          <div style="font-size:11px;color:#9ca3af;margin-bottom:4px;">または</div>
+          <div style="font-size:11px;color:#6b7280;">7日売上 ≥ <input type="number" id="rankS7" value="4" min="1" style="width:52px;border:1px solid #d1d5db;border-radius:4px;padding:2px 6px;font-size:12px;"> 個</div>
+        </div>
+        <div class="rank-setting-card" style="border-color:#3b82f6;background:#eff6ff;">
+          <div style="font-size:13px;font-weight:800;color:#2563eb;margin-bottom:8px;">👍 A ランク（まあまあ）</div>
+          <div style="font-size:11px;color:#6b7280;margin-bottom:4px;">30日売上 ≥ <input type="number" id="rankA30" value="5" min="1" style="width:52px;border:1px solid #d1d5db;border-radius:4px;padding:2px 6px;font-size:12px;"> 個</div>
+          <div style="font-size:11px;color:#9ca3af;margin-bottom:4px;">または</div>
+          <div style="font-size:11px;color:#6b7280;">7日売上 ≥ <input type="number" id="rankA7" value="2" min="1" style="width:52px;border:1px solid #d1d5db;border-radius:4px;padding:2px 6px;font-size:12px;"> 個</div>
+        </div>
+        <div class="rank-setting-card" style="border-color:#f59e0b;background:#fffbeb;">
+          <div style="font-size:13px;font-weight:800;color:#d97706;margin-bottom:8px;">📦 B ランク（売れていない）</div>
+          <div style="font-size:11px;color:#6b7280;line-height:1.7;">S・A 以外で<br>30日売上 ≥ 1 または<br>7日売上 ≥ 1</div>
+        </div>
+        <div class="rank-setting-card" style="border-color:#e5e7eb;background:#f9fafb;">
+          <div style="font-size:13px;font-weight:800;color:#9ca3af;margin-bottom:8px;">💤 C ランク（全然売れていない）</div>
+          <div style="font-size:11px;color:#6b7280;line-height:1.7;">30日売上 = 0 かつ<br>7日売上 = 0</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:13px;color:#374151;">🎯 目標在庫日数</span>
+        <input type="number" id="rankTargetDays" value="30" min="7" max="180" style="width:70px;border:1.5px solid #e5e7eb;border-radius:6px;padding:5px 8px;font-size:13px;">
+        <span style="font-size:12px;color:#6b7280;">日分（補充推奨の基準）</span>
+        <button onclick="runRankAnalysis()" style="background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:7px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 再分析</button>
+      </div>
+    </div>
+    <!-- サマリー -->
+    <div id="rankSummary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;"></div>
+    <!-- タブ -->
+    <div class="tab-bar">
+      <div class="tabs">
+        <button class="rtab active" id="rankTabBtnS" onclick="switchRankTab(event,'s')">🏆 S ランク</button>
+        <button class="rtab" id="rankTabBtnA" onclick="switchRankTab(event,'a')">👍 A ランク</button>
+        <button class="rtab" id="rankTabBtnB" onclick="switchRankTab(event,'b')">📦 B ランク</button>
+        <button class="rtab" id="rankTabBtnC" onclick="switchRankTab(event,'c')">💤 C ランク</button>
+        <button class="rtab" id="rankTabBtnStock" onclick="switchRankTab(event,'stock')">⚠️ 在庫補充推奨</button>
+      </div>
+      <button class="export-btn" onclick="exportRankCSV()">⬇️ CSVダウンロード</button>
+    </div>
+    <div class="rtab-content active" id="rank-tab-s">
+      <div class="sec-header"><span class="sec-title">🏆 S ランク — 売れている <span class="sec-count" id="rankSCount">0件</span></span></div>
+      <div class="table-wrap"><div class="table-scroll" id="rankSTable"></div></div>
+    </div>
+    <div class="rtab-content" id="rank-tab-a">
+      <div class="sec-header"><span class="sec-title">👍 A ランク — まあまあ売れている <span class="sec-count" id="rankACount">0件</span></span></div>
+      <div class="table-wrap"><div class="table-scroll" id="rankATable"></div></div>
+    </div>
+    <div class="rtab-content" id="rank-tab-b">
+      <div class="sec-header"><span class="sec-title">📦 B ランク — 売れていない <span class="sec-count" id="rankBCount">0件</span></span></div>
+      <div class="table-wrap"><div class="table-scroll" id="rankBTable"></div></div>
+    </div>
+    <div class="rtab-content" id="rank-tab-c">
+      <div class="sec-header"><span class="sec-title">💤 C ランク — 全然売れていない <span class="sec-count" id="rankCCount">0件</span></span></div>
+      <div class="table-wrap"><div class="table-scroll" id="rankCTable"></div></div>
+    </div>
+    <div class="rtab-content" id="rank-tab-stock">
+      <div class="sec-header"><span class="sec-title">⚠️ 在庫補充推奨リスト <span class="sec-count" id="rankStockCount">0件</span></span></div>
+      <div class="hint-box">💡 S・Aランク商品の中で、販売ペースと現在の販売可能数を比較し、目標在庫日数を下回る商品を表示しています。<br>
+      🔴 残り7日未満 ／ 🟡 残り14日未満 で色分けしています。</div>
+      <div class="table-wrap"><div class="table-scroll" id="rankStockTable"></div></div>
+    </div>
+  </div><!-- /rankSection -->
+
   </div><!-- /page-analysis -->
 
   <!-- ===== ページ: CKB発送指示作成 ===== -->
@@ -3542,10 +3625,137 @@ function checkReady() {
   if (ckbData && zozoData) { btn.disabled = false; btn.textContent = '📊 分析を実行する'; }
   else if (ckbData)  { btn.textContent = '📊 ZOZOファイルを読み込んでください'; }
   else if (zozoData) { btn.textContent = '📊 CKBファイルを読み込んでください'; }
+  if (zozoData) runRankAnalysis();
 }
 function showAlert(msg) {
   const el = document.getElementById('alertBox');
   el.innerHTML = msg; el.style.display = msg ? 'block' : 'none';
+}
+// ===== ZOZO売上ランク分析 =====
+function runRankAnalysis() {
+  if (!zozoData) return;
+  const sS30 = parseInt(document.getElementById('rankS30').value) || 10;
+  const sS7  = parseInt(document.getElementById('rankS7').value)  || 4;
+  const sA30 = parseInt(document.getElementById('rankA30').value) || 5;
+  const sA7  = parseInt(document.getElementById('rankA7').value)  || 2;
+  const targetDays = parseInt(document.getElementById('rankTargetDays').value) || 30;
+  const items = Object.entries(zozoData).map(([sku, d]) => {
+    let rank;
+    if      (d.sales_30d >= sS30 || d.sales_7d >= sS7) rank = 'S';
+    else if (d.sales_30d >= sA30 || d.sales_7d >= sA7) rank = 'A';
+    else if (d.sales_30d >= 1   || d.sales_7d >= 1)    rank = 'B';
+    else rank = 'C';
+    const daily30   = d.sales_30d / 30;
+    const daily7    = d.sales_7d  / 7;
+    const dailyRate = Math.max(daily30, daily7);
+    const daysLeft  = dailyRate > 0 ? Math.floor(d.zozo_stock / dailyRate) : Infinity;
+    const targetStock = Math.ceil(dailyRate * targetDays);
+    const addNeeded   = Math.max(0, targetStock - d.zozo_stock);
+    return { sku, ...d, rank, dailyRate, daysLeft, addNeeded };
+  });
+  const groups = { S: [], A: [], B: [], C: [] };
+  for (const it of items) groups[it.rank].push(it);
+  for (const g of Object.values(groups)) g.sort((a,b) => b.sales_30d - a.sales_30d || b.sales_7d - a.sales_7d);
+  const stockItems = items
+    .filter(i => i.addNeeded > 0 && (i.rank === 'S' || i.rank === 'A'))
+    .sort((a,b) => a.daysLeft === Infinity ? 1 : b.daysLeft === Infinity ? -1 : a.daysLeft - b.daysLeft || b.addNeeded - a.addNeeded);
+  // サマリーカード
+  const summaries = [
+    { rank:'S', label:'🏆 S ランク', sub:'売れている',       color:'#059669', border:'#10b981', bg:'#f0fdf4', count:groups.S.length },
+    { rank:'A', label:'👍 A ランク', sub:'まあまあ売れている', color:'#2563eb', border:'#3b82f6', bg:'#eff6ff', count:groups.A.length },
+    { rank:'B', label:'📦 B ランク', sub:'売れていない',      color:'#d97706', border:'#f59e0b', bg:'#fffbeb', count:groups.B.length },
+    { rank:'C', label:'💤 C ランク', sub:'全然売れていない',  color:'#9ca3af', border:'#e5e7eb', bg:'#f9fafb', count:groups.C.length },
+  ];
+  document.getElementById('rankSummary').innerHTML = summaries.map(s => `
+    <div style="background:${s.bg};border:2px solid ${s.border};border-radius:10px;padding:14px 16px;text-align:center;">
+      <div style="font-size:13px;font-weight:700;color:${s.color};margin-bottom:4px;">${s.label}</div>
+      <div style="font-size:32px;font-weight:800;color:${s.color};line-height:1.1;">${s.count}</div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:2px;">件 — ${s.sub}</div>
+    </div>`).join('');
+  // カウント更新
+  document.getElementById('rankSCount').textContent     = groups.S.length + '件';
+  document.getElementById('rankACount').textContent     = groups.A.length + '件';
+  document.getElementById('rankBCount').textContent     = groups.B.length + '件';
+  document.getElementById('rankCCount').textContent     = groups.C.length + '件';
+  document.getElementById('rankStockCount').textContent = stockItems.length + '件';
+  document.getElementById('rankTabBtnS').textContent     = '🏆 S (' + groups.S.length + ')';
+  document.getElementById('rankTabBtnA').textContent     = '👍 A (' + groups.A.length + ')';
+  document.getElementById('rankTabBtnB').textContent     = '📦 B (' + groups.B.length + ')';
+  document.getElementById('rankTabBtnC').textContent     = '💤 C (' + groups.C.length + ')';
+  document.getElementById('rankTabBtnStock').textContent = '⚠️ 補充推奨 (' + stockItems.length + ')';
+  // テーブル描画
+  const rankCols = ['商品名','カラー','サイズ','販売可能数','30日売上','7日売上','日次ペース','在庫残り日数'];
+  document.getElementById('rankSTable').innerHTML     = _renderRankRows(groups.S, rankCols);
+  document.getElementById('rankATable').innerHTML     = _renderRankRows(groups.A, rankCols);
+  document.getElementById('rankBTable').innerHTML     = _renderRankRows(groups.B, rankCols);
+  document.getElementById('rankCTable').innerHTML     = _renderRankRows(groups.C, rankCols);
+  document.getElementById('rankStockTable').innerHTML = _renderStockRows(stockItems);
+  window._rankGroups = groups;
+  window._stockItems = stockItems;
+  document.getElementById('rankSection').style.display = 'block';
+}
+function _renderRankRows(items, cols) {
+  if (!items.length) return '<div style="padding:28px;text-align:center;color:#9ca3af;font-size:13px;">該当商品なし</div>';
+  const hdr = cols.map(c => `<th>${c}</th>`).join('');
+  const rows = items.map(it => {
+    const dl   = it.daysLeft === Infinity ? '∞' : it.daysLeft + '日';
+    const dlC  = it.daysLeft < 7 ? '#dc2626' : it.daysLeft < 14 ? '#d97706' : '#374151';
+    return `<tr>
+      <td>${it.product}</td><td>${it.color}</td><td>${it.size}</td>
+      <td style="text-align:right;">${it.zozo_stock}</td>
+      <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
+      <td style="text-align:right;">${it.sales_7d}</td>
+      <td style="text-align:right;color:#6b7280;">${it.dailyRate.toFixed(2)}/日</td>
+      <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
+    </tr>`;
+  }).join('');
+  return `<table><thead><tr>${hdr}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+function _renderStockRows(items) {
+  if (!items.length) return '<div style="padding:28px;text-align:center;color:#059669;font-size:13px;">✅ 在庫補充が必要な商品はありません</div>';
+  const hdr = ['商品名','カラー','サイズ','ランク','販売可能数','30日売上','7日売上','在庫残り日数','推奨追加数'].map(c => `<th>${c}</th>`).join('');
+  const rBadge = r => {
+    const map = { S:'background:#f0fdf4;color:#059669;border:1px solid #6ee7b7;', A:'background:#eff6ff;color:#2563eb;border:1px solid #93c5fd;' };
+    return `<span style="${map[r]||''}padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;">${r}</span>`;
+  };
+  const rows = items.map(it => {
+    const dl  = it.daysLeft === Infinity ? '∞' : it.daysLeft + '日';
+    const dlC = it.daysLeft < 7 ? '#dc2626' : it.daysLeft < 14 ? '#d97706' : '#374151';
+    const bg  = it.daysLeft < 7 ? 'background:#fff5f5;' : it.daysLeft < 14 ? 'background:#fffbeb;' : '';
+    return `<tr style="${bg}">
+      <td>${it.product}</td><td>${it.color}</td><td>${it.size}</td>
+      <td style="text-align:center;">${rBadge(it.rank)}</td>
+      <td style="text-align:right;">${it.zozo_stock}</td>
+      <td style="text-align:right;font-weight:700;">${it.sales_30d}</td>
+      <td style="text-align:right;">${it.sales_7d}</td>
+      <td style="text-align:right;font-weight:600;color:${dlC};">${dl}</td>
+      <td style="text-align:right;font-weight:800;color:#dc2626;">+${it.addNeeded}</td>
+    </tr>`;
+  }).join('');
+  return `<table><thead><tr>${hdr}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+function switchRankTab(e, tab) {
+  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.rtab-content').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('rank-tab-' + tab).classList.add('active');
+}
+function exportRankCSV() {
+  if (!window._rankGroups) return;
+  const all = [...window._rankGroups.S, ...window._rankGroups.A, ...window._rankGroups.B, ...window._rankGroups.C];
+  const hdr = ['ランク','商品名','カラー','サイズ','メーカー品番','販売可能数','30日売上','7日売上','日次ペース(/日)','在庫残り日数','推奨追加数'];
+  const rows = all.map(it => [
+    it.rank, it.product, it.color, it.size, it.sku,
+    it.zozo_stock, it.sales_30d, it.sales_7d,
+    it.dailyRate.toFixed(2),
+    it.daysLeft === Infinity ? '' : it.daysLeft,
+    it.addNeeded || 0,
+  ]);
+  const csv = '\uFEFF' + [hdr, ...rows].map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv' }));
+  a.download = 'ZOZO売上ランク分析_' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '.csv';
+  a.click();
 }
 // ===== 分析実行 =====
 function runAnalysis() {
