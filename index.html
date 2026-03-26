@@ -484,11 +484,7 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
 @keyframes ptShim { to { background-position: -200% 0; } }
 #page-product .pt-err-card { background: #fef2f2; border: 1px solid #fecaca; border-radius: 14px; padding: 18px 20px; font-size: 13px; color: #dc2626; line-height: 1.8; }
 
-/* ===== 戦略アシスタントAI (#page-strategy スコープ) ===== */
-#page-strategy { background: #f4f6fa; min-height: 100%; padding: 24px; }
-#page-strategy .st-title { font-size: 20px; font-weight: 900; color: #1e2433; margin-bottom: 4px; }
-#page-strategy .st-sub { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
-#page-strategy .st-main { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+/* ===== 戦略アシスタントAI (#page-strategy スコープ) — 旧スタイル（renderOutput用に保持） ===== */
 #page-strategy .st-panel { background: #fff; border-radius: 14px; border: 1px solid #e5e7eb; padding: 20px; }
 #page-strategy .st-panel-title { font-size: 13px; font-weight: 800; color: #1e2433; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #f3f4f6; display: flex; align-items: center; gap: 7px; }
 #page-strategy .st-section { margin-bottom: 14px; }
@@ -556,6 +552,82 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
 #page-strategy .st-strategy-detail { font-size: 12px; color: #4b5563; line-height: 1.7; }
 #page-strategy .st-next-card { background: #fff9f0; border: 1.5px solid #fcd34d; border-radius: 12px; padding: 16px 18px; font-size: 13px; color: #92400e; line-height: 1.85; }
 
+/* ===== 戦略アシスタントAI v2 チャットUI ===== */
+#page-strategy { background: #f4f6fa; padding: 0; }
+.stv2-wrap { display: flex; flex-direction: column; height: calc(100vh - 48px); overflow: hidden; }
+.stv2-topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 12px; border-bottom: 1px solid #e5e7eb; background: #fff; flex-shrink: 0; gap: 10px; }
+.stv2-topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.stv2-title { font-size: 17px; font-weight: 900; color: #1e2433; white-space: nowrap; }
+.stv2-session-sel { height: 32px; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0 10px; font-size: 12px; font-family: inherit; color: #374151; background: #f9fafb; max-width: 220px; outline: none; cursor: pointer; }
+.stv2-topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.stv2-new-btn { height: 32px; padding: 0 14px; background: #1e2433; color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+.stv2-new-btn:hover { background: #374151; }
+.stv2-mode-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.stv2-mode-ai { background: #dcfce7; color: #166534; }
+.stv2-mode-manual { background: #fef9c3; color: #854d0e; }
+.stv2-body { display: flex; flex: 1; overflow: hidden; }
+.stv2-sidebar { width: 260px; flex-shrink: 0; border-right: 1px solid #e5e7eb; background: #fafafa; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 14px; }
+.stv2-sidebar-title { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.stv2-preset-card { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: all 0.15s; background: #fff; }
+.stv2-preset-card:hover { border-color: #3b82f6; background: #eff6ff; }
+.stv2-preset-card .pc-icon { font-size: 16px; margin-bottom: 3px; }
+.stv2-preset-card .pc-name { font-size: 12px; font-weight: 700; color: #374151; line-height: 1.4; }
+.stv2-preset-card .pc-hint { font-size: 10px; color: #9ca3af; margin-top: 2px; line-height: 1.4; }
+.stv2-profile-mini { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 12px; font-size: 12px; }
+.stv2-profile-mini .pm-label { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.stv2-profile-mini input, .stv2-profile-mini textarea { width: 100%; border: 1px solid #e5e7eb; border-radius: 6px; padding: 5px 8px; font-size: 11px; font-family: inherit; color: #374151; background: #f9fafb; outline: none; box-sizing: border-box; resize: vertical; margin-bottom: 5px; }
+.stv2-profile-mini input:focus, .stv2-profile-mini textarea:focus { border-color: #3b82f6; background: #fff; }
+.stv2-profile-save { width: 100%; height: 28px; background: #1e2433; color: #fff; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; font-family: inherit; cursor: pointer; margin-top: 4px; }
+.stv2-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.stv2-messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.stv2-msg { display: flex; gap: 10px; align-items: flex-start; max-width: 100%; }
+.stv2-msg.user { flex-direction: row-reverse; }
+.stv2-msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.stv2-msg.user .stv2-msg-avatar { background: #1e2433; color: #fff; }
+.stv2-msg.ai .stv2-msg-avatar { background: #eff6ff; color: #2563eb; border: 1.5px solid #bfdbfe; }
+.stv2-msg-bubble { max-width: calc(100% - 50px); padding: 12px 16px; border-radius: 14px; font-size: 13px; line-height: 1.75; }
+.stv2-msg.user .stv2-msg-bubble { background: #1e2433; color: #fff; border-bottom-right-radius: 4px; }
+.stv2-msg.ai .stv2-msg-bubble { background: #fff; border: 1px solid #e5e7eb; border-bottom-left-radius: 4px; color: #1f2937; }
+.stv2-msg.ai .stv2-msg-bubble.streaming { border-color: #bfdbfe; background: #f0f9ff; }
+.stv2-msg-time { font-size: 10px; color: #9ca3af; margin-top: 4px; text-align: right; }
+.stv2-msg.ai .stv2-msg-time { text-align: left; }
+.stv2-welcome { text-align: center; padding: 40px 20px; color: #9ca3af; }
+.stv2-welcome-icon { font-size: 48px; margin-bottom: 12px; }
+.stv2-welcome-title { font-size: 18px; font-weight: 800; color: #374151; margin-bottom: 8px; }
+.stv2-welcome-sub { font-size: 13px; color: #6b7280; line-height: 1.7; margin-bottom: 20px; }
+.stv2-welcome-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.stv2-welcome-chip { border: 1.5px solid #e5e7eb; border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: #374151; background: #fff; cursor: pointer; transition: all 0.15s; }
+.stv2-welcome-chip:hover { border-color: #3b82f6; background: #eff6ff; color: #2563eb; }
+.stv2-input-area { border-top: 1px solid #e5e7eb; padding: 14px 20px; background: #fff; flex-shrink: 0; }
+.stv2-input-row { display: flex; gap: 8px; align-items: flex-end; }
+.stv2-textarea { flex: 1; min-height: 44px; max-height: 160px; border: 1.5px solid #d1d5db; border-radius: 12px; padding: 10px 14px; font-size: 13px; font-family: inherit; color: #1f2937; resize: none; outline: none; background: #f9fafb; transition: border 0.15s; overflow-y: auto; box-sizing: border-box; }
+.stv2-textarea:focus { border-color: #3b82f6; background: #fff; }
+.stv2-send-btn { width: 44px; height: 44px; border-radius: 10px; background: #1e2433; color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; transition: background 0.15s; }
+.stv2-send-btn:hover { background: #374151; }
+.stv2-send-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+.stv2-file-attach { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.stv2-attach-btn { height: 28px; padding: 0 12px; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 11px; font-weight: 700; font-family: inherit; color: #374151; background: #fff; cursor: pointer; transition: all 0.15s; }
+.stv2-attach-btn:hover { border-color: #3b82f6; color: #2563eb; }
+.stv2-attached-file { font-size: 11px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.stv2-attached-file .rm-btn { color: #9ca3af; cursor: pointer; font-size: 14px; line-height: 1; }
+.stv2-hint-bar { font-size: 11px; color: #9ca3af; text-align: center; margin-top: 6px; }
+.stv2-result-card { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-top: 8px; }
+.stv2-result-card .rc-header { background: #f3f4f6; padding: 10px 14px; font-size: 12px; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 6px; }
+.stv2-result-card .rc-body { padding: 14px; }
+.stv2-apikey-notice { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 14px 16px; font-size: 12px; color: #92400e; line-height: 1.7; margin-bottom: 14px; }
+.stv2-apikey-notice a { color: #2563eb; }
+.stv2-legacy-panel { padding: 16px; background: #f9fafb; border-radius: 10px; border: 1.5px dashed #d1d5db; }
+.stv2-thinking { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+.stv2-thinking span { width: 7px; height: 7px; border-radius: 50%; background: #93c5fd; animation: stv2-blink 1.2s ease-in-out infinite; }
+.stv2-thinking span:nth-child(2) { animation-delay: 0.2s; }
+.stv2-thinking span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes stv2-blink { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
+.stv2-msg-bubble pre { background: #1e2433; color: #e2e8f0; border-radius: 8px; padding: 12px; font-size: 11px; overflow-x: auto; margin: 8px 0; white-space: pre-wrap; word-break: break-all; }
+.stv2-msg-bubble strong { font-weight: 700; }
+.stv2-msg-bubble em { font-style: italic; }
+.stv2-msg-bubble ul, .stv2-msg-bubble ol { padding-left: 20px; margin: 6px 0; }
+.stv2-msg-bubble li { margin-bottom: 3px; }
+.stv2-msg-bubble h3, .stv2-msg-bubble h4 { font-size: 13px; font-weight: 800; color: #1e2433; margin: 10px 0 4px; }
 /* ===== 画像リサイズツール (#page-image スコープ) ===== */
 #page-image { background: #f4f6fa; color: #374151; min-height: 100%; padding: 0; }
 #page-image .img-wrap { max-width: 900px; margin: 0 auto; padding: 28px 32px; }
@@ -1527,6 +1599,35 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
       </button>
     </div>
 
+    <!-- ===== Claude API Key カード ===== -->
+    <div style="margin-top:24px;background:#fff;border-radius:14px;padding:24px;border:1.5px solid #bfdbfe;" id="claudeApiCard">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:22px">🤖</span>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#1e2433">Claude API キー設定</div>
+          <div style="font-size:12px;color:#6b7280;margin-top:2px">戦略アシスタントAI v2 のダイレクト連携</div>
+        </div>
+        <div id="claudeApiStatus" style="margin-left:auto;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;background:#f3f4f6;color:#9ca3af">未設定</div>
+      </div>
+      <div style="font-size:12px;color:#6b7280;line-height:1.7;margin-bottom:14px">
+        Anthropic Console（<a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:#2563eb;">console.anthropic.com</a>）でAPIキーを発行し、ここに登録するとClaude AIと直接チャットできます。<br>
+        キーはこのブラウザのlocalStorageのみに保存され、外部に送信されることはありません。
+      </div>
+      <div id="claudeApiKeyDisplay" style="display:none;margin-bottom:12px;padding:10px 14px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;font-size:12px;color:#166534;display:flex;align-items:center;gap:8px;justify-content:space-between">
+        <span id="claudeApiKeyMasked" style="font-family:monospace;letter-spacing:1px"></span>
+        <div style="display:flex;gap:8px">
+          <button onclick="claudeApiRevealToggle()" id="claudeApiRevealBtn" style="background:none;border:1px solid #86efac;border-radius:5px;padding:3px 10px;font-size:11px;color:#059669;cursor:pointer;font-family:inherit">表示</button>
+          <button onclick="claudeApiDelete()" style="background:none;border:1px solid #fca5a5;border-radius:5px;padding:3px 10px;font-size:11px;color:#dc2626;cursor:pointer;font-family:inherit">削除</button>
+        </div>
+      </div>
+      <div id="claudeApiInputRow" style="display:flex;gap:8px;margin-bottom:10px">
+        <input type="password" id="claudeApiKeyInput" placeholder="sk-ant-api03-..." style="flex:1;height:38px;border:1.5px solid #d1d5db;border-radius:8px;padding:0 12px;font-size:13px;font-family:monospace;outline:none;background:#f9fafb;color:#374151" oninput="document.getElementById('claudeApiSaveBtn').disabled=!this.value.trim()">
+        <button id="claudeApiSaveBtn" onclick="claudeApiSave()" disabled style="height:38px;padding:0 18px;background:#1e2433;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;opacity:0.5" onmouseenter="if(!this.disabled)this.style.background='#374151'" onmouseleave="this.style.background='#1e2433'">保存</button>
+        <button onclick="claudeApiTest()" style="height:38px;padding:0 14px;background:#fff;color:#374151;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" id="claudeApiTestBtn">接続テスト</button>
+      </div>
+      <div id="claudeApiMsg" style="font-size:12px;min-height:18px;color:#6b7280"></div>
+    </div>
+
     <!-- ===== 運用フローガイド ===== -->
     <div style="margin-top:24px;background:#ffffff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden;">
       <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;">
@@ -1844,143 +1945,124 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
 
   <!-- ===== 戦略アシスタントAIページ ===== -->
   <div id="page-strategy" style="display:none">
-    <div class="st-title">🧠 戦略アシスタントAI</div>
-    <div class="st-sub">売上・在庫データをアップロードしてAIがアイテムごとの戦略を分析します</div>
-    <div class="st-main">
-      <!-- 左パネル -->
-      <div>
-        <!-- 会社プロフィール -->
-        <div class="st-panel" style="margin-bottom:16px">
-          <div class="st-panel-title">🏢 会社プロフィール（AIへの情報）</div>
-          <div class="st-section">
-            <div class="st-label">ブランド名</div>
-            <input type="text" class="st-input" id="stBrand" placeholder="例：mushwear">
-          </div>
-          <div class="st-section">
-            <div class="st-label">ターゲット顧客・ブランドコンセプト</div>
-            <textarea class="st-input st-textarea" id="stTarget" placeholder="例：20〜35歳の感度が高い日本人。シンプル・ミニマルなベーシックアイテム中心。"></textarea>
-          </div>
-          <div class="st-section">
-            <div class="st-label">主な価格帯</div>
-            <input type="text" class="st-input" id="stPrice" placeholder="例：トップス ¥8,000〜¥18,000 / ボトムス ¥12,000〜¥25,000">
-          </div>
-          <div class="st-section">
-            <div class="st-label">強み・こだわり・その他コンテキスト</div>
-            <textarea class="st-input st-textarea" id="stContext" placeholder="例：天然素材中心。ZOZOTOWNとShopify両チャネル展開。競合はXXXとYYY。"></textarea>
-          </div>
-          <button class="st-save-btn" onclick="STRATOOL.saveProfile()">💾 プロフィールを保存する</button>
-          <div id="stSaveMsg" style="display:none;margin-top:8px;text-align:center;font-size:11px;color:#10b981;font-weight:700">✅ 保存しました！次回から自動で読み込まれます</div>
+    <div class="stv2-wrap">
+      <!-- トップバー -->
+      <div class="stv2-topbar">
+        <div class="stv2-topbar-left">
+          <span style="font-size:22px">🧠</span>
+          <span class="stv2-title">戦略アシスタントAI</span>
+          <select class="stv2-session-sel" id="stv2SessionSel" onchange="STRATOOLv2.switchSession(this.value)">
+            <option value="">セッションを選択...</option>
+          </select>
         </div>
-        <!-- データアップロード -->
-        <div class="st-panel" style="margin-bottom:16px">
-          <div class="st-panel-title">📊 データアップロード</div>
-          <div class="st-drop" id="stDropZone" onclick="document.getElementById('stFi').click()">
-            <div class="st-drop-icon">📁</div>
-            <div class="st-drop-text">クリックまたはドラッグ＆ドロップ</div>
-            <div class="st-drop-hint">CSV・Excel（.xlsx/.xls）対応 ／ ZOZO売上・在庫データ等</div>
-            <input type="file" id="stFi" accept=".csv,.xlsx,.xls" style="display:none">
-          </div>
-          <div id="stFileInfo" style="display:none" class="st-file-info">
-            <span style="font-size:20px">📄</span>
-            <div>
-              <div id="stFileName" style="font-size:13px;font-weight:700;color:#166534"></div>
-              <div id="stFileRows" style="font-size:11px;color:#4ade80;margin-top:2px"></div>
-            </div>
-          </div>
-        </div>
-        <!-- 分析タイプ -->
-        <div class="st-panel" style="margin-bottom:16px">
-          <div class="st-panel-title">🔍 分析タイプを選ぶ</div>
-          <div class="st-type-grid">
-            <div class="st-type-card st-type-active" id="stType0" onclick="STRATOOL.setType(0)">
-              <div class="st-type-icon">📈</div>
-              <div class="st-type-name">売れ筋・死筋分析</div>
-            </div>
-            <div class="st-type-card" id="stType1" onclick="STRATOOL.setType(1)">
-              <div class="st-type-icon">📦</div>
-              <div class="st-type-name">在庫最適化提案</div>
-            </div>
-            <div class="st-type-card" id="stType2" onclick="STRATOOL.setType(2)">
-              <div class="st-type-icon">💰</div>
-              <div class="st-type-name">価格戦略分析</div>
-            </div>
-            <div class="st-type-card" id="stType3" onclick="STRATOOL.setType(3)">
-              <div class="st-type-icon">🌱</div>
-              <div class="st-type-name">次シーズン仕入れ提案</div>
-            </div>
-            <div class="st-type-card" id="stType4" onclick="STRATOOL.setType(4)" style="grid-column:1/-1">
-              <div class="st-type-icon">🎯</div>
-              <div class="st-type-name">総合戦略レポート（全項目）</div>
-            </div>
-            <div class="st-type-card" id="stType5" onclick="STRATOOL.setType(5)" style="grid-column:1/-1;border-color:#f59e0b;background:#fffbeb;">
-              <div class="st-type-icon">📅</div>
-              <div class="st-type-name" style="color:#92400e;">期間比較分析（ブランドターゲット変遷）<br><span style="font-size:10px;font-weight:400;color:#b45309;">今月/直近3ヶ月/半年/昨年 を比較して変遷を分析</span></div>
-            </div>
-          </div>
-        </div>
-        <!-- 期間比較アップロード（type5選択時のみ表示） -->
-        <div class="st-panel" id="stPeriodPanel" style="margin-bottom:16px;display:none;">
-          <div class="st-panel-title">📅 期間別データアップロード
-            <span style="font-size:10px;font-weight:400;color:#9ca3af;margin-left:6px;">pbo.korecow.jp/Mng/#/analysis から各期間のデータをエクスポート</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div id="stPeriod0" class="st-period-slot" data-period="今月">
-              <div style="font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:5px;">📌 今月</div>
-              <div class="st-drop" style="padding:12px;" onclick="document.getElementById('stPFi0').click()">
-                <div class="st-drop-text" id="stPName0" style="font-size:12px;">クリックまたはドロップ</div>
-                <input type="file" id="stPFi0" accept=".csv,.xlsx,.xls" style="display:none" onchange="STRATOOL.loadPeriodFile(0,this.files[0])">
-              </div>
-            </div>
-            <div id="stPeriod1" class="st-period-slot" data-period="直近3ヶ月">
-              <div style="font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:5px;">📌 直近3ヶ月</div>
-              <div class="st-drop" style="padding:12px;" onclick="document.getElementById('stPFi1').click()">
-                <div class="st-drop-text" id="stPName1" style="font-size:12px;">クリックまたはドロップ</div>
-                <input type="file" id="stPFi1" accept=".csv,.xlsx,.xls" style="display:none" onchange="STRATOOL.loadPeriodFile(1,this.files[0])">
-              </div>
-            </div>
-            <div id="stPeriod2" class="st-period-slot" data-period="直近半年">
-              <div style="font-size:11px;font-weight:700;color:#059669;margin-bottom:5px;">📌 直近半年</div>
-              <div class="st-drop" style="padding:12px;" onclick="document.getElementById('stPFi2').click()">
-                <div class="st-drop-text" id="stPName2" style="font-size:12px;">クリックまたはドロップ</div>
-                <input type="file" id="stPFi2" accept=".csv,.xlsx,.xls" style="display:none" onchange="STRATOOL.loadPeriodFile(2,this.files[0])">
-              </div>
-            </div>
-            <div id="stPeriod3" class="st-period-slot" data-period="昨年（同期比較）">
-              <div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:5px;">📌 昨年（同期比較）</div>
-              <div class="st-drop" style="padding:12px;" onclick="document.getElementById('stPFi3').click()">
-                <div class="st-drop-text" id="stPName3" style="font-size:12px;">クリックまたはドロップ</div>
-                <input type="file" id="stPFi3" accept=".csv,.xlsx,.xls" style="display:none" onchange="STRATOOL.loadPeriodFile(3,this.files[0])">
-              </div>
-            </div>
-          </div>
-          <div style="margin-top:10px;padding:8px 12px;background:#fffbeb;border-radius:8px;font-size:11px;color:#92400e;line-height:1.6;">
-            💡 1ファイルだけでも分析できます。複数あるほど変遷分析の精度が上がります。
-          </div>
-        </div>
-        <!-- Claude.ai連携 -->
-        <div class="st-panel">
-          <div class="st-panel-title">🤖 Claude.aiで分析する</div>
-          <button class="st-gen-btn" onclick="STRATOOL.openClaudeAi()">📋 プロンプトをコピーしてClaude.aiを開く</button>
-          <div id="stCopyNotice" class="st-copy-notice">
-            ✅ クリップボードにコピーしました！<br>
-            ① Claude.aiにプロンプトを貼り付けて送信（データ量が多い場合はファイル添付も可）<br>
-            ② 返答のJSONを全部コピー<br>
-            ③ 下のエリアに貼り付けて「分析を反映する」を押す
-          </div>
-          <div style="margin-top:14px">
-            <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Claude.aiの返答（JSON）を貼り付け</div>
-            <textarea class="st-paste-area" id="stJsonPaste" placeholder='{"summary":"...","highlight":[...],"items":[...],"strategies":[...],"next_season":"..."}'></textarea>
-            <button class="st-apply-btn" onclick="STRATOOL.applyJson()">✅ 分析を反映する</button>
-          </div>
+        <div class="stv2-topbar-right">
+          <span id="stv2ModeBadge" class="stv2-mode-badge stv2-mode-manual">⚙️ 手動モード</span>
+          <button class="stv2-new-btn" onclick="STRATOOLv2.newSession()">＋ 新しいチャット</button>
         </div>
       </div>
-      <!-- 右パネル -->
-      <div id="stRightPanel">
-        <div class="st-panel">
-          <div class="st-right-empty">
-            <div class="st-empty-icon">🧠</div>
-            <div class="st-empty-title">戦略アシスタントAI</div>
-            <div class="st-empty-sub">① 会社プロフィールを入力・保存<br>② 売上や在庫データをアップロード<br>③ 分析タイプを選んでClaude.aiへ<br>④ 返答のJSONを貼り付けると<br>ここに戦略分析が表示されます</div>
+
+      <!-- ボディ -->
+      <div class="stv2-body">
+        <!-- サイドバー: プリセット + プロフィール -->
+        <div class="stv2-sidebar">
+          <div>
+            <div class="stv2-sidebar-title">クイック分析</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div class="stv2-preset-card" onclick="STRATOOLv2.sendPreset('trending')">
+                <div class="pc-icon">📈</div>
+                <div class="pc-name">売れ筋・死筋分析</div>
+                <div class="pc-hint">現在のデータから注力 / 撤退SKUを提案</div>
+              </div>
+              <div class="stv2-preset-card" onclick="STRATOOLv2.sendPreset('stock')">
+                <div class="pc-icon">📦</div>
+                <div class="pc-name">在庫最適化提案</div>
+                <div class="pc-hint">過剰・不足SKUを特定し対処法を提案</div>
+              </div>
+              <div class="stv2-preset-card" onclick="STRATOOLv2.sendPreset('price')">
+                <div class="pc-icon">💰</div>
+                <div class="pc-name">価格戦略分析</div>
+                <div class="pc-hint">値上げ・値下げ・バンドルの機会を特定</div>
+              </div>
+              <div class="stv2-preset-card" onclick="STRATOOLv2.sendPreset('nextseason')">
+                <div class="pc-icon">🌱</div>
+                <div class="pc-name">次シーズン仕入れ提案</div>
+                <div class="pc-hint">今期実績から次期仕入れ優先順位を提案</div>
+              </div>
+              <div class="stv2-preset-card" onclick="STRATOOLv2.sendPreset('full')">
+                <div class="pc-icon">🎯</div>
+                <div class="pc-name">総合戦略レポート</div>
+                <div class="pc-hint">短期・中期・長期の戦略アクションを一括分析</div>
+              </div>
+              <div class="stv2-preset-card" style="border-color:#f59e0b;background:#fffbeb;" onclick="STRATOOLv2.sendPreset('period')">
+                <div class="pc-icon">📅</div>
+                <div class="pc-name" style="color:#92400e;">期間比較・ターゲット変遷</div>
+                <div class="pc-hint" style="color:#b45309;">複数期間のデータでブランド変遷を分析</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ブランドプロフィール -->
+          <div>
+            <div class="stv2-sidebar-title">ブランドプロフィール</div>
+            <div class="stv2-profile-mini">
+              <div class="pm-label">ブランド名</div>
+              <input type="text" id="stBrand" placeholder="例：mushwear">
+              <div class="pm-label">ターゲット・コンセプト</div>
+              <textarea id="stTarget" rows="2" placeholder="例：20〜35歳。シンプル・ミニマル系。"></textarea>
+              <div class="pm-label">主な価格帯</div>
+              <input type="text" id="stPrice" placeholder="例：トップス¥8,000〜¥18,000">
+              <div class="pm-label">強み・その他</div>
+              <textarea id="stContext" rows="2" placeholder="例：天然素材中心。ZOZO+Shopify展開。"></textarea>
+              <button class="stv2-profile-save" onclick="STRATOOLv2.saveProfile()">💾 保存</button>
+              <div id="stSaveMsg" style="display:none;margin-top:5px;text-align:center;font-size:10px;color:#10b981;font-weight:700">✅ 保存済み</div>
+            </div>
+          </div>
+
+          <!-- データアップロード（添付用） -->
+          <div>
+            <div class="stv2-sidebar-title">データ添付</div>
+            <div style="border:2px dashed #d1d5db;border-radius:9px;padding:12px;text-align:center;cursor:pointer;transition:all 0.15s;background:#fff" id="stv2DropZone" onclick="document.getElementById('stv2Fi').click()" ondragover="event.preventDefault();this.style.borderColor='#3b82f6'" ondragleave="this.style.borderColor='#d1d5db'" ondrop="STRATOOLv2.onDrop(event)">
+              <div style="font-size:20px;margin-bottom:3px">📁</div>
+              <div style="font-size:11px;font-weight:700;color:#374151">クリック or ドロップ</div>
+              <div style="font-size:10px;color:#9ca3af;margin-top:2px">CSV / Excel</div>
+              <input type="file" id="stv2Fi" accept=".csv,.xlsx,.xls" style="display:none" onchange="STRATOOLv2.attachFile(this.files[0])">
+            </div>
+            <div id="stv2FileInfo" style="display:none;margin-top:8px;padding:7px 10px;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;font-size:11px;color:#166534;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:6px">
+              <span id="stv2FileName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+              <span style="cursor:pointer;color:#9ca3af;font-size:14px;flex-shrink:0" onclick="STRATOOLv2.clearFile()">×</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- メインチャットエリア -->
+        <div class="stv2-main">
+          <!-- メッセージスレッド -->
+          <div class="stv2-messages" id="stv2Messages">
+            <!-- ウェルカム画面 -->
+            <div class="stv2-welcome" id="stv2Welcome">
+              <div class="stv2-welcome-icon">🧠</div>
+              <div class="stv2-welcome-title">戦略アシスタントAI</div>
+              <div class="stv2-welcome-sub" id="stv2WelcomeSub">APIキーを設定すると、Claude AIと直接チャットできます。<br>左のプリセットから分析を始めるか、自由に質問してください。</div>
+              <div class="stv2-welcome-chips">
+                <div class="stv2-welcome-chip" onclick="STRATOOLv2.sendPreset('trending')">📈 売れ筋分析</div>
+                <div class="stv2-welcome-chip" onclick="STRATOOLv2.sendPreset('stock')">📦 在庫最適化</div>
+                <div class="stv2-welcome-chip" onclick="STRATOOLv2.sendPreset('full')">🎯 総合レポート</div>
+                <div class="stv2-welcome-chip" onclick="STRATOOLv2.sendPreset('nextseason')">🌱 次シーズン提案</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 入力エリア -->
+          <div class="stv2-input-area">
+            <!-- APIキー未設定時の通知 -->
+            <div id="stv2ApiNotice" style="display:none" class="stv2-apikey-notice">
+              🔑 <strong>APIキー未設定:</strong> <a href="#" onclick="switchPage('connections');return false">連携接続ページ</a> でClaude APIキーを登録すると、このアプリから直接AIと会話できます。現在は手動モード（コピー&ペースト）で動作しています。
+            </div>
+            <div class="stv2-input-row">
+              <textarea class="stv2-textarea" id="stv2Input" placeholder="メッセージを入力... (Shift+Enterで改行、Enterで送信)" rows="1" onkeydown="STRATOOLv2.onKeydown(event)" oninput="STRATOOLv2.autoResize(this)"></textarea>
+              <button class="stv2-send-btn" id="stv2SendBtn" onclick="STRATOOLv2.send()" title="送信">➤</button>
+            </div>
+            <div class="stv2-hint-bar" id="stv2HintBar">プリセットカードから分析を開始できます</div>
           </div>
         </div>
       </div>
@@ -3164,6 +3246,11 @@ function switchPage(page) {
     const el = document.getElementById('page-'+p);
     if (el) el.style.display = (p === page) ? '' : 'none';
   });
+  // チャットUIはパディングなしでフル表示
+  const mc = document.querySelector('.main-content');
+  const ct = document.querySelector('.container');
+  if (mc) mc.style.padding = page === 'strategy' ? '0' : '';
+  if (ct) ct.style.maxWidth = page === 'strategy' ? 'none' : '';
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const nav = document.getElementById('nav-'+page) || document.getElementById('nav'+page.charAt(0).toUpperCase()+page.slice(1));
   if (nav) nav.classList.add('active');
@@ -3177,7 +3264,8 @@ function switchPage(page) {
   // 画像リサイズページ
   if (page === 'image') { IMGTOOL.init(); }
   if (page === 'product') { PRODTOOL.init(); }
-  if (page === 'strategy') { STRATOOL.init(); }
+  if (page === 'strategy') { STRATOOLv2.init(); }
+  if (page === 'connections') { claudeApiRefreshUI(); }
   if (page === 'imagedb') { renderImageDbTable(); }
   if (page === 'productmaster') { renderProductmasterTable(); }
 }
@@ -5234,6 +5322,732 @@ ${dataText}
   return { init, saveProfile, setType, loadPeriodFile, openClaudeAi, applyJson };
 })();
 
+/* ================================================================
+   CLAUDE_API — APIキー管理 + ストリーミングフェッチ
+   ================================================================ */
+const CLAUDE_API = (() => {
+  const LS_KEY = 'mushwear_apiKey';
+  const ENDPOINT = 'https://api.anthropic.com/v1/messages';
+  const MODEL = 'claude-sonnet-4-20250514';
+
+  function getKey() {
+    try { return localStorage.getItem(LS_KEY) || ''; } catch(e) { return ''; }
+  }
+  function setKey(k) {
+    try { localStorage.setItem(LS_KEY, k); } catch(e) {}
+  }
+  function clearKey() {
+    try { localStorage.removeItem(LS_KEY); } catch(e) {}
+  }
+  function hasKey() { return !!getKey(); }
+
+  // ストリーミング送信。onChunk(text) コールバックを受け取りリアルタイムに流す
+  async function streamMessage({ messages, systemPrompt, onChunk, onDone, onError, signal }) {
+    const key = getKey();
+    if (!key) { onError && onError('APIキーが設定されていません'); return; }
+    try {
+      const body = {
+        model: MODEL,
+        max_tokens: 4096,
+        stream: true,
+        system: systemPrompt || '',
+        messages,
+      };
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify(body),
+        signal,
+      });
+      if (!res.ok) {
+        let errMsg = `APIエラー: ${res.status}`;
+        try { const j = await res.json(); errMsg = j.error?.message || errMsg; } catch(e) {}
+        throw new Error(errMsg);
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') break;
+          try {
+            const ev = JSON.parse(raw);
+            if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
+              onChunk && onChunk(ev.delta.text);
+            }
+          } catch(e) {}
+        }
+      }
+      onDone && onDone();
+    } catch(err) {
+      if (err.name === 'AbortError') return;
+      onError && onError(err.message || String(err));
+    }
+  }
+
+  // 接続テスト（短いリクエスト）
+  async function testConnection() {
+    return new Promise((resolve) => {
+      let result = '';
+      streamMessage({
+        messages: [{ role: 'user', content: 'こんにちは。1文字だけ返してください。' }],
+        systemPrompt: 'テストです。',
+        onChunk: t => { result += t; },
+        onDone: () => resolve({ ok: true, text: result }),
+        onError: e => resolve({ ok: false, error: e }),
+      });
+    });
+  }
+
+  return { getKey, setKey, clearKey, hasKey, streamMessage, testConnection };
+})();
+
+/* ================================================================
+   Claude API Key UIコントロール（connections page用）
+   ================================================================ */
+function claudeApiRefreshUI() {
+  const key = CLAUDE_API.getKey();
+  const hasKey = !!key;
+  const display = document.getElementById('claudeApiKeyDisplay');
+  const inputRow = document.getElementById('claudeApiInputRow');
+  const statusEl = document.getElementById('claudeApiStatus');
+  const maskedEl = document.getElementById('claudeApiKeyMasked');
+  if (!display) return;
+  if (hasKey) {
+    display.style.display = 'flex';
+    inputRow.style.display = 'none';
+    maskedEl.textContent = key.substring(0, 10) + '•'.repeat(Math.min(20, key.length - 10)) + '...';
+    statusEl.style.background = '#dcfce7'; statusEl.style.color = '#166534'; statusEl.textContent = '✅ 設定済み';
+  } else {
+    display.style.display = 'none';
+    inputRow.style.display = 'flex';
+    statusEl.style.background = '#f3f4f6'; statusEl.style.color = '#9ca3af'; statusEl.textContent = '未設定';
+  }
+}
+function claudeApiSave() {
+  const input = document.getElementById('claudeApiKeyInput');
+  const key = (input?.value || '').trim();
+  if (!key) return;
+  CLAUDE_API.setKey(key);
+  input.value = '';
+  claudeApiRefreshUI();
+  const msg = document.getElementById('claudeApiMsg');
+  if (msg) { msg.style.color = '#059669'; msg.textContent = '✅ APIキーを保存しました。戦略アシスタントAIからClaude AIに直接接続できます。'; }
+  // v2モードバッジも更新
+  if (typeof STRATOOLv2 !== 'undefined') STRATOOLv2.refreshModeBadge();
+}
+let _apiKeyRevealed = false;
+function claudeApiRevealToggle() {
+  const btn = document.getElementById('claudeApiRevealBtn');
+  const masked = document.getElementById('claudeApiKeyMasked');
+  const key = CLAUDE_API.getKey();
+  _apiKeyRevealed = !_apiKeyRevealed;
+  if (_apiKeyRevealed) {
+    masked.textContent = key;
+    btn.textContent = '隠す';
+  } else {
+    masked.textContent = key.substring(0, 10) + '•'.repeat(Math.min(20, key.length - 10)) + '...';
+    btn.textContent = '表示';
+  }
+}
+function claudeApiDelete() {
+  if (!confirm('APIキーを削除しますか？')) return;
+  CLAUDE_API.clearKey();
+  claudeApiRefreshUI();
+  const msg = document.getElementById('claudeApiMsg');
+  if (msg) { msg.style.color = '#dc2626'; msg.textContent = 'APIキーを削除しました。'; }
+  if (typeof STRATOOLv2 !== 'undefined') STRATOOLv2.refreshModeBadge();
+}
+async function claudeApiTest() {
+  const btn = document.getElementById('claudeApiTestBtn');
+  const msg = document.getElementById('claudeApiMsg');
+  if (!CLAUDE_API.hasKey()) {
+    // キーが未保存の場合、入力欄の値でテスト
+    const inputVal = (document.getElementById('claudeApiKeyInput')?.value || '').trim();
+    if (!inputVal) { if (msg) { msg.style.color = '#dc2626'; msg.textContent = 'まずAPIキーを入力してください。'; } return; }
+    CLAUDE_API.setKey(inputVal);
+  }
+  btn.textContent = '接続中...'; btn.disabled = true;
+  if (msg) { msg.style.color = '#6b7280'; msg.textContent = '接続をテストしています...'; }
+  const result = await CLAUDE_API.testConnection();
+  btn.textContent = '接続テスト'; btn.disabled = false;
+  if (result.ok) {
+    if (msg) { msg.style.color = '#059669'; msg.textContent = `✅ 接続成功！Claudeからの応答: "${result.text.substring(0, 30)}"...`; }
+    claudeApiRefreshUI();
+    if (typeof STRATOOLv2 !== 'undefined') STRATOOLv2.refreshModeBadge();
+  } else {
+    if (msg) { msg.style.color = '#dc2626'; msg.textContent = `❌ 接続失敗: ${result.error}`; }
+  }
+}
+
+/* ================================================================
+   DATAHUB — アプリデータ収集 & システムプロンプト生成
+   ================================================================ */
+const DATAHUB = (() => {
+  function buildSystemPrompt(profile) {
+    const brand   = profile.brand   || '';
+    const target  = profile.target  || '';
+    const price   = profile.price   || '';
+    const context = profile.context || '';
+
+    let sys = `あなたはアパレルECブランド「${brand || 'ブランド名未設定'}」の専属戦略コンサルタントAIです。
+以下のブランド情報と現在のデータを踏まえて、実践的で具体的な戦略アドバイスを日本語で提供してください。
+回答はわかりやすく、数値根拠を示しながら、アクション可能な提案を行ってください。`;
+
+    if (target)  sys += `\n\n【ターゲット・コンセプト】${target}`;
+    if (price)   sys += `\n\n【価格帯】${price}`;
+    if (context) sys += `\n\n【その他】${context}`;
+
+    // ZOZO分析データ
+    const zData = _summarizeZozo();
+    if (zData) sys += `\n\n【ZOZO売上・在庫データ（直近）】\n${zData}`;
+
+    // ダッシュボードKPI
+    const dData = _summarizeDash();
+    if (dData) sys += `\n\n【ダッシュボードKPI】\n${dData}`;
+
+    // 商品マスターDB
+    const pData = _summarizeProducts();
+    if (pData) sys += `\n\n【商品マスターDB（登録商品）】\n${pData}`;
+
+    sys += '\n\n---\nユーザーの質問に対して、上記データを参照しながら答えてください。JSONのみの返答を求められた場合はJSONのみ返してください。';
+    return sys;
+  }
+
+  function _summarizeZozo() {
+    // window._rankGroups や window._stockItems などのグローバルから集約
+    const groups = window._rankGroups;
+    if (!groups || !Object.keys(groups).length) return null;
+    const lines = [];
+    for (const [tab, items] of Object.entries(groups)) {
+      if (!items || !items.length) continue;
+      const top5 = items.slice(0, 5).map(it =>
+        `${it.sku}(売30d:${it.sales_30d||0},在庫:${it.stock||0},日次:${(it.dailyRate||0).toFixed(2)})`
+      ).join(' | ');
+      lines.push(`[${tab}] TOP5: ${top5}`);
+    }
+    if (window._stockItems && window._stockItems.length) {
+      const low = window._stockItems.filter(x => x.daysLeft !== null && x.daysLeft < 14).slice(0, 5);
+      if (low.length) lines.push(`在庫切れ危険SKU(14日以内): ${low.map(x=>`${x.sku}(残${x.daysLeft}日)`).join(', ')}`);
+    }
+    return lines.length ? lines.join('\n') : null;
+  }
+
+  function _summarizeDash() {
+    // ダッシュボードのKPI値を収集
+    const kpis = ['kpiZozoToday','kpiZozo7d','kpiZozo30d','kpiShopifyToday'];
+    const parts = [];
+    for (const id of kpis) {
+      const el = document.getElementById(id);
+      if (el && el.textContent && el.textContent !== '-' && el.textContent !== '¥0') {
+        parts.push(`${id.replace('kpi','')}: ${el.textContent}`);
+      }
+    }
+    return parts.length ? parts.join(' / ') : null;
+  }
+
+  function _summarizeProducts() {
+    if (!productDB || !Object.keys(productDB).length) return null;
+    const keys = Object.keys(productDB);
+    const total = keys.length;
+    const sample = keys.slice(0, 10).map(k => {
+      const d = productDB[k];
+      return `${k}(${d.name||''}，¥${d.price||'-'})`;
+    }).join(', ');
+    return `全${total}SKU登録。サンプル: ${sample}${total > 10 ? '...' : ''}`;
+  }
+
+  return { buildSystemPrompt };
+})();
+
+/* ================================================================
+   STRATOOLv2 — チャットコントローラー & セッション管理
+   ================================================================ */
+const STRATOOLv2 = (() => {
+  const MAX_SESSIONS = 30;
+  const LS_SESSIONS = 'mushwear_chatSessions';
+  const LS_CHAT_PREFIX = 'mushwear_chat_';
+
+  let currentSessionId = null;
+  let attachedFile = null; // { name, rows, text }
+  let _abortCtrl = null;
+
+  // ===== セッション管理 =====
+  function _genId() { return 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
+
+  function _loadSessionList() {
+    try { return JSON.parse(localStorage.getItem(LS_SESSIONS) || '[]'); } catch(e) { return []; }
+  }
+  function _saveSessionList(list) {
+    try { localStorage.setItem(LS_SESSIONS, JSON.stringify(list)); } catch(e) {}
+  }
+  function _loadMessages(id) {
+    try { return JSON.parse(localStorage.getItem(LS_CHAT_PREFIX + id) || '[]'); } catch(e) { return []; }
+  }
+  function _saveMessages(id, msgs) {
+    try { localStorage.setItem(LS_CHAT_PREFIX + id, JSON.stringify(msgs)); } catch(e) {}
+  }
+  function _deleteSession(id) {
+    let list = _loadSessionList().filter(s => s.id !== id);
+    _saveSessionList(list);
+    try { localStorage.removeItem(LS_CHAT_PREFIX + id); } catch(e) {}
+  }
+  function _pruneOldSessions() {
+    let list = _loadSessionList();
+    while (list.length >= MAX_SESSIONS) {
+      const oldest = list.pop();
+      try { localStorage.removeItem(LS_CHAT_PREFIX + oldest.id); } catch(e) {}
+    }
+    _saveSessionList(list);
+  }
+  function _createSession(firstMsg) {
+    _pruneOldSessions();
+    const id = _genId();
+    const title = firstMsg.substring(0, 24) + (firstMsg.length > 24 ? '...' : '');
+    const list = _loadSessionList();
+    list.unshift({ id, title, createdAt: Date.now() });
+    _saveSessionList(list);
+    _saveMessages(id, []);
+    return id;
+  }
+  function _updateSessionTitle(id, title) {
+    const list = _loadSessionList();
+    const s = list.find(x => x.id === id);
+    if (s) { s.title = title; _saveSessionList(list); }
+  }
+
+  // ===== プロフィール =====
+  function saveProfile() {
+    const p = {
+      brand:   document.getElementById('stBrand')?.value   || '',
+      target:  document.getElementById('stTarget')?.value  || '',
+      price:   document.getElementById('stPrice')?.value   || '',
+      context: document.getElementById('stContext')?.value || '',
+    };
+    try { localStorage.setItem('mushwear_profile', JSON.stringify(p)); } catch(e) {}
+    const msg = document.getElementById('stSaveMsg');
+    if (msg) { msg.style.display = 'block'; setTimeout(() => msg.style.display='none', 2000); }
+  }
+  function _loadProfile() {
+    try {
+      const s = localStorage.getItem('mushwear_profile');
+      if (!s) return {};
+      return JSON.parse(s);
+    } catch(e) { return {}; }
+  }
+  function _fillProfile() {
+    const p = _loadProfile();
+    if (p.brand   && document.getElementById('stBrand'))   document.getElementById('stBrand').value   = p.brand;
+    if (p.target  && document.getElementById('stTarget'))  document.getElementById('stTarget').value  = p.target;
+    if (p.price   && document.getElementById('stPrice'))   document.getElementById('stPrice').value   = p.price;
+    if (p.context && document.getElementById('stContext')) document.getElementById('stContext').value = p.context;
+  }
+
+  // ===== UI更新 =====
+  function refreshModeBadge() {
+    const badge = document.getElementById('stv2ModeBadge');
+    if (!badge) return;
+    if (CLAUDE_API.hasKey()) {
+      badge.className = 'stv2-mode-badge stv2-mode-ai';
+      badge.textContent = '✨ AI直接接続';
+      const notice = document.getElementById('stv2ApiNotice');
+      if (notice) notice.style.display = 'none';
+      const sub = document.getElementById('stv2WelcomeSub');
+      if (sub) sub.textContent = 'Claude AIと直接対話できます。左のプリセットから分析を開始するか、自由にメッセージを入力してください。';
+    } else {
+      badge.className = 'stv2-mode-badge stv2-mode-manual';
+      badge.textContent = '⚙️ 手動モード';
+      const notice = document.getElementById('stv2ApiNotice');
+      if (notice) notice.style.display = 'block';
+    }
+  }
+
+  function _refreshSessionSelector() {
+    const sel = document.getElementById('stv2SessionSel');
+    if (!sel) return;
+    const list = _loadSessionList();
+    sel.innerHTML = '<option value="">新しいチャット</option>';
+    for (const s of list) {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.title || '（無題）';
+      if (s.id === currentSessionId) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }
+
+  function _showWelcome(show) {
+    const w = document.getElementById('stv2Welcome');
+    if (w) w.style.display = show ? 'block' : 'none';
+  }
+
+  // ===== メッセージレンダリング =====
+  function _renderMessages(msgs) {
+    const container = document.getElementById('stv2Messages');
+    if (!container) return;
+    _showWelcome(false);
+    // 既存メッセージを消去してから再描画
+    while (container.firstChild) container.removeChild(container.firstChild);
+    for (const m of msgs) {
+      _appendBubble(m.role, m.content, m.time);
+    }
+    _scrollBottom();
+  }
+
+  function _appendBubble(role, content, time, rawHtml) {
+    const container = document.getElementById('stv2Messages');
+    if (!container) return null;
+    _showWelcome(false);
+    const isUser = role === 'user';
+    const wrapper = document.createElement('div');
+    wrapper.className = `stv2-msg ${isUser ? 'user' : 'ai'}`;
+    const avatar = document.createElement('div');
+    avatar.className = 'stv2-msg-avatar';
+    avatar.textContent = isUser ? '👤' : '🧠';
+    const col = document.createElement('div');
+    col.style.maxWidth = 'calc(100% - 50px)';
+    const bubble = document.createElement('div');
+    bubble.className = 'stv2-msg-bubble';
+    bubble.innerHTML = rawHtml ? content : _formatContent(content);
+    const timeEl = document.createElement('div');
+    timeEl.className = 'stv2-msg-time';
+    timeEl.textContent = time || _nowTime();
+    col.appendChild(bubble);
+    col.appendChild(timeEl);
+    if (isUser) { wrapper.appendChild(col); wrapper.appendChild(avatar); }
+    else         { wrapper.appendChild(avatar); wrapper.appendChild(col); }
+    container.appendChild(wrapper);
+    _scrollBottom();
+    return bubble; // ストリーミング更新用に返す
+  }
+
+  function _formatContent(text) {
+    if (!text) return '';
+    // 基本的なMarkdownっぽい変換
+    return text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/```([\s\S]*?)```/g, '<pre>$1</pre>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function _nowTime() {
+    const d = new Date(); return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function _scrollBottom() {
+    const c = document.getElementById('stv2Messages');
+    if (c) setTimeout(() => c.scrollTop = c.scrollHeight, 30);
+  }
+
+  // ===== 送信ロジック =====
+  function _getInput() { return (document.getElementById('stv2Input')?.value || '').trim(); }
+  function _clearInput() {
+    const el = document.getElementById('stv2Input');
+    if (el) { el.value = ''; el.style.height = '44px'; }
+  }
+  function _setDisabled(v) {
+    const btn = document.getElementById('stv2SendBtn');
+    if (btn) btn.disabled = v;
+    const ta = document.getElementById('stv2Input');
+    if (ta) ta.disabled = v;
+  }
+
+  async function send(overrideText) {
+    const text = overrideText || _getInput();
+    if (!text) return;
+    _clearInput();
+
+    // セッション初期化
+    if (!currentSessionId) {
+      currentSessionId = _createSession(text);
+      _refreshSessionSelector();
+    }
+
+    // ユーザーメッセージをメモリ+UIに追加
+    const now = _nowTime();
+    const savedMsgs = _loadMessages(currentSessionId);
+    savedMsgs.push({ role: 'user', content: text, time: now });
+    _saveMessages(currentSessionId, savedMsgs);
+    _appendBubble('user', text, now);
+
+    // ファイル添付テキストがあれば結合
+    let userContent = text;
+    if (attachedFile) {
+      userContent += `\n\n[添付ファイル: ${attachedFile.name}（${attachedFile.rows}行）]\n${attachedFile.text}`;
+    }
+
+    // APIキーなし → 手動モード（プロンプトコピー）
+    if (!CLAUDE_API.hasKey()) {
+      _doManualFallback(text);
+      return;
+    }
+
+    // APIモード: ストリーミング送信
+    _setDisabled(true);
+    const profile = _loadProfile();
+    const systemPrompt = DATAHUB.buildSystemPrompt(profile);
+
+    // 会話履歴を構築（API用、直近10往復まで）
+    const histMsgs = savedMsgs.slice(-20).map(m => ({
+      role: m.role === 'user' ? 'user' : 'assistant',
+      content: m.role === 'user' && m === savedMsgs[savedMsgs.length - 1] ? userContent : m.content,
+    }));
+
+    // ストリーミング表示バブルを作成
+    const aiBubble = _appendBubble('ai', '', now);
+    if (aiBubble) aiBubble.classList.add('streaming');
+    // thinking indicator
+    if (aiBubble) aiBubble.innerHTML = '<div class="stv2-thinking"><span></span><span></span><span></span></div>';
+
+    _abortCtrl = new AbortController();
+    let aiText = '';
+
+    CLAUDE_API.streamMessage({
+      messages: histMsgs,
+      systemPrompt,
+      signal: _abortCtrl.signal,
+      onChunk: (chunk) => {
+        aiText += chunk;
+        if (aiBubble) aiBubble.innerHTML = _formatContent(aiText);
+        _scrollBottom();
+      },
+      onDone: () => {
+        if (aiBubble) aiBubble.classList.remove('streaming');
+        // 保存
+        const msgs2 = _loadMessages(currentSessionId);
+        msgs2.push({ role: 'assistant', content: aiText, time: _nowTime() });
+        _saveMessages(currentSessionId, msgs2);
+        // タイトル更新（最初のAI応答で）
+        if (msgs2.length === 2) _updateSessionTitle(currentSessionId, text.substring(0, 24));
+        _refreshSessionSelector();
+        _setDisabled(false);
+        clearFile();
+        _abortCtrl = null;
+        // JSON形式の応答だった場合は結果カードも表示
+        _tryRenderJsonResult(aiText, aiBubble?.parentElement?.parentElement);
+      },
+      onError: (err) => {
+        if (aiBubble) {
+          aiBubble.classList.remove('streaming');
+          aiBubble.innerHTML = `<span style="color:#dc2626">❌ エラー: ${err}</span>`;
+        }
+        _setDisabled(false);
+        _abortCtrl = null;
+      },
+    });
+  }
+
+  function _tryRenderJsonResult(text, wrapper) {
+    try {
+      const cleaned = text.replace(/```json|```/g,'').trim();
+      if (!cleaned.startsWith('{')) return;
+      const d = JSON.parse(cleaned);
+      if (!d.summary && !d.strategies) return;
+      // 結果カードを追加
+      const container = document.getElementById('stv2Messages');
+      const card = document.createElement('div');
+      card.className = 'stv2-msg ai';
+      card.innerHTML = `<div class="stv2-msg-avatar" style="background:#eff6ff;color:#2563eb;border:1.5px solid #bfdbfe;">📊</div>
+        <div style="flex:1;max-width:calc(100% - 50px)">
+          <div style="font-size:11px;color:#6b7280;margin-bottom:6px">📋 構造化結果を表示しました</div>
+          <div class="st-result-wrap">${_buildResultHtml(d)}</div>
+        </div>`;
+      container.appendChild(card);
+      _scrollBottom();
+    } catch(e) {}
+  }
+
+  function _buildResultHtml(d) {
+    const highlights = (d.highlight || []).map(h => {
+      const icon = h.trend==='up'?'▲':h.trend==='down'?'▼':'━';
+      const cls  = h.trend==='up'?'trend-up':h.trend==='down'?'trend-down':'';
+      return `<div class="st-kpi-chip"><div class="st-kpi-lbl">${h.label}</div><div class="st-kpi-val ${cls}">${icon} ${h.value}</div></div>`;
+    }).join('');
+    const items = (d.items||[]).map(it => {
+      const bc = it.status==='好調'?'badge-good':it.status==='撤退推奨'?'badge-exit':'badge-warn';
+      return `<tr><td><strong>${it.name}</strong></td><td><span class="st-badge ${bc}">${it.status}</span></td><td>${it.insight}</td><td>${it.action}</td></tr>`;
+    }).join('');
+    const strategies = (d.strategies||[]).sort((a,b)=>a.priority-b.priority).map(s => {
+      const ic = s.impact==='high'?'impact-high':s.impact==='medium'?'impact-medium':'impact-low';
+      const il = s.impact==='high'?'🔴 最優先':s.impact==='medium'?'🟡 中優先':'🟢 低優先';
+      return `<div class="st-strategy-item ${ic}"><div class="st-strategy-num">${il} ／ STRATEGY ${s.priority}</div><div class="st-strategy-title">${s.title}</div><div class="st-strategy-detail">${s.detail}</div></div>`;
+    }).join('');
+    return `
+      <div class="st-summary-card"><div class="st-summary-label">🧠 AI 分析サマリー</div><div class="st-summary-text">${d.summary||''}</div></div>
+      ${highlights ? `<div class="st-panel"><div class="st-result-section-title">📌 主要指標</div><div class="st-kpi-row">${highlights}</div></div>` : ''}
+      ${items ? `<div class="st-panel"><div class="st-result-section-title">📋 アイテム別評価</div><div style="overflow-x:auto"><table class="st-items-table"><thead><tr><th>商品名</th><th>ステータス</th><th>根拠</th><th>アクション</th></tr></thead><tbody>${items}</tbody></table></div></div>` : ''}
+      ${strategies ? `<div class="st-panel"><div class="st-result-section-title">🎯 戦略アクション</div><div class="st-strategy-list">${strategies}</div></div>` : ''}
+      ${d.next_season ? `<div class="st-next-card">${d.next_season}</div>` : ''}`;
+  }
+
+  function _doManualFallback(userText) {
+    // 手動モード: プロンプトをクリップボードにコピーしてClaude.aiを開くよう案内
+    const profile = _loadProfile();
+    const sys = DATAHUB.buildSystemPrompt(profile);
+    const prompt = sys + '\n\n---\nユーザーの質問:\n' + userText +
+      (attachedFile ? `\n\n[添付データ: ${attachedFile.name}]\n${attachedFile.text}` : '');
+    try { navigator.clipboard.writeText(prompt).catch(()=>{}); } catch(e) {}
+    const now = _nowTime();
+    _appendBubble('ai',
+      `📋 プロンプトをクリップボードにコピーしました！<br><br>` +
+      `① <a href="https://claude.ai" target="_blank" style="color:#2563eb">Claude.ai</a> を開いてプロンプトを貼り付けてください<br>` +
+      `② Claudeの返答（JSON）をコピー<br>` +
+      `③ 下のテキストエリアに貼り付けて「反映」ボタンを押すと結果が表示されます<br><br>` +
+      `<div style="margin-top:8px"><textarea id="stv2JsonPaste" class="st-paste-area" style="width:100%;min-height:80px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;font-size:12px;font-family:monospace;color:#374151;resize:vertical;outline:none;box-sizing:border-box" placeholder='{"summary":"...","items":[...],"strategies":[]}'></textarea>` +
+      `<button class="st-apply-btn" style="width:100%;height:38px;background:#059669;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:6px" onclick="STRATOOLv2.applyPastedJson()">✅ 結果を反映する</button></div>`,
+      now, true /* rawHtml */
+    );
+    clearFile();
+  }
+
+  function applyPastedJson() {
+    const raw = (document.getElementById('stv2JsonPaste')?.value || '').trim();
+    if (!raw) { alert('Claude.aiの返答（JSON）を貼り付けてください'); return; }
+    try {
+      const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+      const container = document.getElementById('stv2Messages');
+      const card = document.createElement('div');
+      card.className = 'stv2-msg ai';
+      card.innerHTML = `<div class="stv2-msg-avatar" style="background:#eff6ff;color:#2563eb;border:1.5px solid #bfdbfe;">📊</div>
+        <div style="flex:1;max-width:calc(100% - 50px)">
+          <div class="st-result-wrap">${_buildResultHtml(d)}</div>
+        </div>`;
+      container.appendChild(card);
+      _scrollBottom();
+    } catch(e) {
+      alert('JSONの解析に失敗しました: ' + e.message);
+    }
+  }
+
+  // ===== プリセット送信 =====
+  const PRESET_TEXTS = {
+    trending:  '現在のZOZO売上・在庫データを分析して、売れ筋SKUと死筋SKUを特定してください。注力すべき商品と在庫見直しが必要な商品を具体的に教えてください。JSONフォーマット（summary/highlight/items/strategies/next_season）で返答してください。',
+    stock:     '現在の在庫数と売上速度から最適在庫量を算出し、過剰・不足SKUを特定して具体的な対処方法を提案してください。JSONフォーマット（summary/highlight/items/strategies/next_season）で返答してください。',
+    price:     '価格帯ごとの売上傾向を分析し、値上げ・値下げ・バンドル販売が有効なアイテムをデータに基づいて提案してください。JSONフォーマット（summary/highlight/items/strategies/next_season）で返答してください。',
+    nextseason:'今シーズンの実績をもとに次シーズンの仕入れ優先カテゴリ・SKU・推奨数量を具体的に提案してください。JSONフォーマット（summary/highlight/items/strategies/next_season）で返答してください。',
+    full:      '売上・在庫・トレンドを総合分析し、短期（1ヶ月）・中期（3ヶ月）・長期（6ヶ月）の戦略アクションを優先度付きで提案してください。JSONフォーマット（summary/highlight/items/strategies/next_season）で返答してください。',
+    period:    '複数期間のデータを比較してブランドのターゲット層の変遷を分析し、今後のターゲット戦略と主力商品の方向性を提案してください。添付ファイルがある場合はそのデータを優先して使用してください。',
+  };
+
+  function sendPreset(key) {
+    const text = PRESET_TEXTS[key];
+    if (!text) return;
+    document.getElementById('stv2Input').value = text;
+    send();
+  }
+
+  // ===== ファイル添付 =====
+  function attachFile(file) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    const parseData = (rows, fname) => {
+      const cols = Object.keys(rows[0] || {});
+      const csvLines = [cols.join(',')].concat(rows.slice(0, 80).map(r => cols.map(c => String(r[c]??'')).join(',')));
+      if (rows.length > 80) csvLines.push(`...（全${rows.length}行中80行表示）`);
+      attachedFile = { name: fname, rows: rows.length, text: csvLines.join('\n') };
+      const info = document.getElementById('stv2FileInfo');
+      const nameEl = document.getElementById('stv2FileName');
+      if (info) info.style.display = 'flex';
+      if (nameEl) nameEl.textContent = `📄 ${fname} (${rows.length}行)`;
+    };
+    if (name.endsWith('.csv')) {
+      Papa.parse(file, { header: true, skipEmptyLines: true, complete: res => parseData(res.data, file.name) });
+    } else {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const wb = XLSX.read(e.target.result, { type: 'binary' });
+        const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+        parseData(json, file.name);
+      };
+      reader.readAsBinaryString(file);
+    }
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('stv2DropZone').style.borderColor = '#d1d5db';
+    if (e.dataTransfer.files[0]) attachFile(e.dataTransfer.files[0]);
+  }
+
+  function clearFile() {
+    attachedFile = null;
+    const info = document.getElementById('stv2FileInfo');
+    if (info) info.style.display = 'none';
+    const fi = document.getElementById('stv2Fi');
+    if (fi) fi.value = '';
+  }
+
+  // ===== セッション切替 =====
+  function switchSession(id) {
+    if (!id) { newSession(); return; }
+    currentSessionId = id;
+    const msgs = _loadMessages(id);
+    if (msgs.length) {
+      _renderMessages(msgs);
+    } else {
+      _showWelcome(true);
+    }
+  }
+
+  function newSession() {
+    currentSessionId = null;
+    const container = document.getElementById('stv2Messages');
+    if (container) {
+      while (container.firstChild) container.removeChild(container.firstChild);
+    }
+    _showWelcome(true);
+    const sel = document.getElementById('stv2SessionSel');
+    if (sel) sel.value = '';
+    clearFile();
+  }
+
+  // ===== キーボード =====
+  function onKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  }
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+  }
+
+  // ===== 初期化 =====
+  function init() {
+    _fillProfile();
+    refreshModeBadge();
+    _refreshSessionSelector();
+    // セッション選択の最新を復元
+    const list = _loadSessionList();
+    if (list.length && currentSessionId && list.find(s => s.id === currentSessionId)) {
+      switchSession(currentSessionId);
+    } else {
+      newSession();
+    }
+  }
+
+  return { init, saveProfile, sendPreset, send, applyPastedJson, attachFile, onDrop, clearFile, switchSession, newSession, onKeydown, autoResize, refreshModeBadge };
+})();
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('emptyState').style.display = 'block';
