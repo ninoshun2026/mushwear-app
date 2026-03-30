@@ -2281,6 +2281,17 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
               <span class="stk-subtotal-label">月間売上合計</span>
               <span class="stk-subtotal-val" id="stk-sales-total">¥0</span>
             </div>
+            <div class="stk-field" style="margin-top:14px;">
+              <div class="stk-label" style="display:flex;align-items:center;gap:6px;">
+                アイエント手数料（実数）
+                <span style="font-size:10px;font-weight:600;background:#fef3c7;color:#92400e;border-radius:4px;padding:2px 7px;">空欄 = ZOZO×45% 自動計算</span>
+              </div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-ient-actual" class="stk-input" placeholder="自動計算" oninput="STOCKTAKE.updateCalc()">
+              </div>
+              <div id="stk-ient-actual-hint" style="font-size:11px;color:#9ca3af;margin-top:4px;padding-left:2px;">現在: ZOZO ¥0 × 45% = ¥0</div>
+            </div>
           </div>
         </div>
 
@@ -6484,6 +6495,7 @@ const STOCKTAKE = (() => {
       invTransit:    parseVal('stk-inv-transit'),
       salesZozo:     parseVal('stk-sales-zozo'),
       salesEc:       parseVal('stk-sales-ec'),
+      ientActual:    (() => { const el = document.getElementById('stk-ient-actual'); return (el && el.value !== '') ? (parseFloat(el.value) || 0) : null; })(),
       adCost:        parseVal('stk-ad-cost'),
       fixedLabor:    parseVal('stk-fixed-labor')    || 700000,
       fixedIent:     parseVal('stk-fixed-ient')     || 70000,
@@ -6498,7 +6510,8 @@ const STOCKTAKE = (() => {
     const totalSales      = d.salesZozo + d.salesEc;
     const cogs            = d.prevInventory + d.purchase - totalInventory;
     const cogsRatio       = totalSales > 0 ? cogs / totalSales : 0;
-    const ientCommission  = d.salesZozo * 0.45;
+    const ientAutoCalc    = d.salesZozo * 0.45;
+    const ientCommission  = d.ientActual !== null ? d.ientActual : ientAutoCalc;
     const grossProfit     = totalSales - cogs - ientCommission;
     const fixedLabor      = d.fixedLabor;
     const fixedIentFee    = d.fixedIent;
@@ -6509,7 +6522,7 @@ const STOCKTAKE = (() => {
     const opProfitRatio   = totalSales > 0 ? opProfit / totalSales : 0;
     const adRatioTotal    = totalSales > 0 ? d.adCost / totalSales : 0;
     const adRatioEc       = d.salesEc > 0  ? d.adCost / d.salesEc  : 0;
-    return { totalInventory, totalSales, cogs, cogsRatio, ientCommission, grossProfit,
+    return { totalInventory, totalSales, cogs, cogsRatio, ientAutoCalc, ientCommission, grossProfit,
              shopifyFee, otherExpenses, sgaTotal, opProfit, opProfitRatio, adRatioTotal, adRatioEc };
   }
 
@@ -6537,7 +6550,12 @@ const STOCKTAKE = (() => {
     setText('pl-cogs-detail',  `前月棚卸し ${fmt(d.prevInventory)} ＋ 仕入れ ${fmt(d.purchase)} ー 期末棚卸し ${fmt(r.totalInventory)}`);
 
     setText('pl-ient-fee',     fmt(r.ientCommission));
-    setText('pl-ient-detail',  `ZOZO ${fmt(d.salesZozo)} × 45%`);
+    setText('pl-ient-detail',  d.ientActual !== null
+      ? `実数入力 ¥${r.ientCommission.toLocaleString('ja-JP')}（自動計算: ZOZO ${fmt(d.salesZozo)} × 45% = ${fmt(r.ientAutoCalc)}）`
+      : `ZOZO ${fmt(d.salesZozo)} × 45%（自動計算）`);
+    // ヒントテキスト更新
+    const hintEl = document.getElementById('stk-ient-actual-hint');
+    if (hintEl) hintEl.textContent = `自動計算: ZOZO ${fmt(d.salesZozo)} × 45% = ${fmt(r.ientAutoCalc)}`;
 
     setText('pl-gross-profit', fmt(r.grossProfit));
     setText('pl-gross-detail', `売上 ${fmt(r.totalSales)} ー 売上原価 ${fmt(r.cogs)} ー アイエント手数料 ${fmt(r.ientCommission)}`);
@@ -6584,6 +6602,7 @@ const STOCKTAKE = (() => {
       invTransit:  d.invTransit,
       salesZozo:   d.salesZozo,
       salesEc:     d.salesEc,
+      ientActual:  d.ientActual,
       adCost:      d.adCost,
       fixedLabor:  d.fixedLabor,
       fixedIent:   d.fixedIent,
@@ -6642,9 +6661,11 @@ const STOCKTAKE = (() => {
     setVal('stk-inv-ckb-d2c',   rec.invCkbD2c);
     setVal('stk-inv-china',     rec.invChina);
     setVal('stk-inv-transit',rec.invTransit);
-    setVal('stk-sales-zozo', rec.salesZozo);
-    setVal('stk-sales-ec',   rec.salesEc);
-    setVal('stk-ad-cost',              rec.adCost);
+    setVal('stk-sales-zozo',   rec.salesZozo);
+    setVal('stk-sales-ec',     rec.salesEc);
+    const ientEl = document.getElementById('stk-ient-actual');
+    if (ientEl) ientEl.value = (rec.ientActual !== null && rec.ientActual !== undefined) ? rec.ientActual : '';
+    setVal('stk-ad-cost',      rec.adCost);
     setVal('stk-fixed-labor',          rec.fixedLabor  ?? 700000);
     setVal('stk-fixed-ient',           rec.fixedIent   ?? 70000);
     setVal('stk-fixed-shopify-rate',   rec.shopifyRate != null ? (rec.shopifyRate * 100).toFixed(1) : 4);
@@ -6691,7 +6712,7 @@ const STOCKTAKE = (() => {
   // ---- フォームクリア ----
   function clearForm() {
     ['stk-prev-inv','stk-purchase','stk-inv-zozo','stk-inv-ckb-b2b','stk-inv-ckb-d2c',
-     'stk-inv-china','stk-inv-transit','stk-sales-zozo','stk-sales-ec','stk-ad-cost']
+     'stk-inv-china','stk-inv-transit','stk-sales-zozo','stk-sales-ec','stk-ient-actual','stk-ad-cost']
       .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
     // 固定費はデフォルト値にリセット
     const setFixed = (id, v) => { const el = document.getElementById(id); if(el) el.value = v; };
