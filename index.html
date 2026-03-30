@@ -747,6 +747,96 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
 .mnl-sidebar-mock .s-item { display: flex; align-items: center; gap: 8px; padding: 8px 14px; font-size: 11px; color: rgba(255,255,255,0.5); }
 .mnl-sidebar-mock .s-item.active { background: rgba(59,130,246,0.2); color: #fff; border-left: 3px solid #3b82f6; }
 .mnl-layout-mock { display: flex; gap: 12px; align-items: flex-start; }
+
+/* ===== 月末棚卸しページ ===== */
+#page-stocktake { background:#f0f2f7; min-height:100%; padding:28px 32px; overflow-y:auto; }
+.stk-page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+.stk-page-title { font-size:22px; font-weight:800; color:#1f2937; margin-bottom:3px; }
+.stk-page-sub { font-size:13px; color:#6b7280; }
+.stk-header-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.stk-month-input { border:1.5px solid #d1d5db; border-radius:9px; padding:8px 14px; font-size:14px; font-weight:700; color:#1f2937; background:#fff; outline:none; cursor:pointer; }
+.stk-month-input:focus { border-color:#3b82f6; }
+.stk-btn-save { background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; border-radius:9px; padding:9px 22px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.15s; box-shadow:0 2px 8px rgba(59,130,246,0.3); }
+.stk-btn-save:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(59,130,246,0.4); }
+.stk-btn-cancel { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:9px; padding:8px 18px; font-size:13px; font-weight:600; cursor:pointer; }
+.stk-edit-banner { background:linear-gradient(135deg,#fef3c7,#fde68a); border:1.5px solid #f59e0b; border-radius:10px; padding:10px 18px; margin-bottom:16px; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; color:#92400e; }
+.stk-edit-banner-icon { font-size:18px; }
+
+.stk-main-grid { display:grid; grid-template-columns:1fr 380px; gap:20px; margin-bottom:28px; }
+@media(max-width:900px){ .stk-main-grid { grid-template-columns:1fr; } }
+
+/* カード共通 */
+.stk-card { background:#fff; border-radius:14px; box-shadow:0 1px 6px rgba(0,0,0,0.07); border:1.5px solid #e5e7eb; margin-bottom:16px; overflow:hidden; }
+.stk-card-header { padding:13px 20px; font-size:13px; font-weight:800; letter-spacing:0.3px; display:flex; align-items:center; gap:8px; }
+.stk-card-header.blue { background:linear-gradient(135deg,#eff6ff,#dbeafe); color:#1d4ed8; border-bottom:1.5px solid #bfdbfe; }
+.stk-card-header.orange { background:linear-gradient(135deg,#fff7ed,#fed7aa); color:#c2410c; border-bottom:1.5px solid #fdba74; }
+.stk-card-header.green { background:linear-gradient(135deg,#f0fdf4,#bbf7d0); color:#15803d; border-bottom:1.5px solid #86efac; }
+.stk-card-header.purple { background:linear-gradient(135deg,#faf5ff,#e9d5ff); color:#7c3aed; border-bottom:1.5px solid #c4b5fd; }
+.stk-card-body { padding:18px 20px; }
+
+/* 入力フィールド */
+.stk-field { margin-bottom:14px; }
+.stk-field:last-child { margin-bottom:0; }
+.stk-label { font-size:11px; font-weight:700; color:#6b7280; margin-bottom:5px; letter-spacing:0.3px; text-transform:uppercase; }
+.stk-input-wrap { position:relative; display:flex; align-items:center; }
+.stk-input-prefix { position:absolute; left:12px; font-size:14px; font-weight:700; color:#9ca3af; }
+.stk-input { width:100%; border:1.5px solid #e5e7eb; border-radius:8px; padding:10px 12px 10px 26px; font-size:15px; font-weight:700; color:#1f2937; outline:none; transition:border-color 0.15s; background:#fafafa; box-sizing:border-box; }
+.stk-input:focus { border-color:#3b82f6; background:#fff; }
+.stk-input::placeholder { color:#d1d5db; font-weight:400; }
+.stk-subtotal-row { display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border-radius:8px; padding:9px 14px; margin-top:12px; border:1.5px solid #e5e7eb; }
+.stk-subtotal-label { font-size:12px; font-weight:700; color:#374151; }
+.stk-subtotal-val { font-size:15px; font-weight:800; color:#1d4ed8; }
+.stk-fixed-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f3f4f6; gap:10px; }
+.stk-fixed-row:last-child { border-bottom:none; }
+.stk-fixed-label { font-size:12px; color:#374151; font-weight:600; flex:1; min-width:0; }
+.stk-fixed-amount { font-size:14px; font-weight:800; color:#4b5563; }
+.stk-fixed-badge { font-size:10px; font-weight:700; background:#f3f4f6; color:#9ca3af; border-radius:4px; padding:2px 6px; margin-left:5px; }
+.stk-fixed-input-wrap { display:flex; align-items:center; gap:3px; flex-shrink:0; }
+.stk-fixed-prefix { font-size:12px; font-weight:700; color:#9ca3af; }
+.stk-fixed-input { width:110px; border:1.5px solid #e5e7eb; border-radius:7px; padding:6px 8px; font-size:13px; font-weight:700; color:#1f2937; outline:none; text-align:right; background:#fafafa; transition:border-color 0.15s; }
+.stk-fixed-input:focus { border-color:#3b82f6; background:#fff; }
+.stk-fixed-input.rate-input { width:64px; }
+.stk-rate-result { font-size:11px; color:#6b7280; margin-top:2px; text-align:right; }
+
+/* P&Lサマリーカード */
+.stk-pl-col { display:flex; flex-direction:column; gap:0; }
+.stk-pl-block { background:#fff; border-radius:14px; box-shadow:0 1px 6px rgba(0,0,0,0.07); border:1.5px solid #e5e7eb; margin-bottom:12px; overflow:hidden; }
+.stk-pl-block-header { padding:11px 18px; font-size:11px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase; }
+.stk-pl-block-header.rev { background:linear-gradient(135deg,#eff6ff,#dbeafe); color:#1e40af; border-bottom:1.5px solid #bfdbfe; }
+.stk-pl-block-header.cogs { background:linear-gradient(135deg,#fff7ed,#fed7aa); color:#9a3412; border-bottom:1.5px solid #fdba74; }
+.stk-pl-block-header.comm { background:linear-gradient(135deg,#fdf2f8,#fce7f3); color:#9d174d; border-bottom:1.5px solid #fbcfe8; }
+.stk-pl-block-header.gross { background:linear-gradient(135deg,#ecfdf5,#d1fae5); color:#065f46; border-bottom:1.5px solid #6ee7b7; }
+.stk-pl-block-header.sga { background:linear-gradient(135deg,#fff1f2,#ffe4e6); color:#9f1239; border-bottom:1.5px solid #fecdd3; }
+.stk-pl-block-header.op { background:linear-gradient(135deg,#1e293b,#334155); color:#e2e8f0; border-bottom:1.5px solid #475569; }
+.stk-pl-block-body { padding:14px 18px; }
+.stk-pl-amount { font-size:24px; font-weight:900; color:#1f2937; line-height:1; margin-bottom:4px; }
+.stk-pl-amount.pos { color:#059669; }
+.stk-pl-amount.neg { color:#dc2626; }
+.stk-pl-amount.op-amount { font-size:30px; }
+.stk-pl-sub { font-size:11px; color:#9ca3af; margin-top:4px; }
+.stk-pl-formula { font-size:11px; color:#9ca3af; background:#f8fafc; border-radius:6px; padding:6px 10px; margin-top:8px; line-height:1.6; }
+.stk-pl-ratio { font-size:16px; font-weight:800; }
+.stk-pl-ratio.pos { color:#059669; }
+.stk-pl-ratio.neg { color:#dc2626; }
+
+/* 過去データセクション */
+.stk-history-section { background:#fff; border-radius:14px; box-shadow:0 1px 6px rgba(0,0,0,0.07); border:1.5px solid #e5e7eb; overflow:hidden; }
+.stk-history-header { padding:14px 20px; background:linear-gradient(135deg,#1e293b,#334155); color:#f1f5f9; font-size:14px; font-weight:800; display:flex; align-items:center; gap:8px; }
+.stk-history-table { width:100%; border-collapse:collapse; font-size:12px; }
+.stk-history-table thead th { padding:10px 14px; background:#f8fafc; color:#374151; font-weight:800; text-align:right; border-bottom:1.5px solid #e5e7eb; font-size:11px; white-space:nowrap; }
+.stk-history-table thead th:first-child, .stk-history-table thead th:last-child { text-align:center; }
+.stk-history-table tbody td { padding:11px 14px; border-bottom:1px solid #f3f4f6; text-align:right; color:#374151; font-weight:600; white-space:nowrap; }
+.stk-history-table tbody td:first-child { text-align:center; font-weight:800; color:#1d4ed8; }
+.stk-history-table tbody td:last-child { text-align:center; }
+.stk-history-table tbody tr:last-child td { border-bottom:none; }
+.stk-history-table tbody tr:hover { background:#f8fafc; }
+.stk-td-pos { color:#059669 !important; }
+.stk-td-neg { color:#dc2626 !important; }
+.stk-action-btn { border:none; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; cursor:pointer; }
+.stk-action-btn.edit { background:#eff6ff; color:#1d4ed8; margin-right:4px; }
+.stk-action-btn.edit:hover { background:#dbeafe; }
+.stk-action-btn.del { background:#fff1f2; color:#dc2626; }
+.stk-action-btn.del:hover { background:#ffe4e6; }
 </style>
 </head>
 <body>
@@ -781,6 +871,9 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
     </button>
     <button class="nav-item" id="navStrategy" onclick="switchPage('strategy')">
       <span class="nav-icon">🧠</span>戦略アシスタントAI
+    </button>
+    <button class="nav-item" id="navStocktake" onclick="switchPage('stocktake')">
+      <span class="nav-icon">📋</span>月末棚卸し
     </button>
     <div class="nav-divider"></div>
     <!-- マニュアルメニュー -->
@@ -2071,6 +2164,288 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
 
   </div><!-- /container -->
 
+  <!-- ===== ページ: 月末棚卸し ===== -->
+  <div id="page-stocktake" style="display:none">
+
+    <!-- ヘッダー -->
+    <div class="stk-page-header">
+      <div>
+        <div class="stk-page-title">📋 月末棚卸し</div>
+        <div class="stk-page-sub">月次在庫評価 &amp; 損益計算書</div>
+      </div>
+      <div class="stk-header-actions">
+        <input type="month" id="stk-month" class="stk-month-input">
+        <button class="stk-btn-cancel" id="stk-cancel-btn" style="display:none" onclick="STOCKTAKE.cancelEdit()">キャンセル</button>
+        <button class="stk-btn-save" onclick="STOCKTAKE.saveRecord()">💾 確定保存</button>
+      </div>
+    </div>
+
+    <!-- 編集中バナー -->
+    <div class="stk-edit-banner" id="stk-edit-banner" style="display:none">
+      <span class="stk-edit-banner-icon">✏️</span>
+      <span><span class="stk-edit-month" id="stk-edit-month-label"></span> のデータを修正中です。変更後「確定保存」を押してください。</span>
+    </div>
+
+    <!-- メイングリッド -->
+    <div class="stk-main-grid">
+
+      <!-- ===== 左列：入力フォーム ===== -->
+      <div class="stk-input-col">
+
+        <!-- 前月繰越 & 仕入れ -->
+        <div class="stk-card">
+          <div class="stk-card-header orange">📦 前月繰越 &amp; 月間仕入れ</div>
+          <div class="stk-card-body">
+            <div class="stk-field">
+              <div class="stk-label">先月期末棚卸し額（前月末合計）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-prev-inv" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">月間仕入れ額（関税含む）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-purchase" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 期末棚卸し在庫 -->
+        <div class="stk-card">
+          <div class="stk-card-header blue">🏭 期末棚卸し在庫金額</div>
+          <div class="stk-card-body">
+            <div class="stk-field">
+              <div class="stk-label">ZOZO倉庫</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-zozo" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">CKBデポジット（B2B）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-ckb-b2b" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">CKBデポジット（D2C）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-ckb-d2c" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">中国発送前在庫</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-china" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">配送中在庫（船便）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-transit" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-subtotal-row">
+              <span class="stk-subtotal-label">期末棚卸し合計</span>
+              <span class="stk-subtotal-val" id="stk-inv-total">¥0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 月間売上 -->
+        <div class="stk-card">
+          <div class="stk-card-header green">💰 月間売上</div>
+          <div class="stk-card-body">
+            <div class="stk-field">
+              <div class="stk-label">ZOZO</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-sales-zozo" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">自社ECサイト（Shopify）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-sales-ec" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-subtotal-row">
+              <span class="stk-subtotal-label">月間売上合計</span>
+              <span class="stk-subtotal-val" id="stk-sales-total">¥0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 販売管理費 -->
+        <div class="stk-card">
+          <div class="stk-card-header purple">📊 販売管理費</div>
+          <div class="stk-card-body">
+            <div class="stk-field">
+              <div class="stk-label">広告費（手動入力）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-ad-cost" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-fixed-row">
+              <span class="stk-fixed-label">人件費など</span>
+              <div class="stk-fixed-input-wrap">
+                <span class="stk-fixed-prefix">¥</span>
+                <input type="number" id="stk-fixed-labor" class="stk-fixed-input" value="700000" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-fixed-row">
+              <span class="stk-fixed-label">アイエント月額手数料</span>
+              <div class="stk-fixed-input-wrap">
+                <span class="stk-fixed-prefix">¥</span>
+                <input type="number" id="stk-fixed-ient" class="stk-fixed-input" value="70000" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-fixed-row">
+              <div style="flex:1;min-width:0;">
+                <span class="stk-fixed-label">Shopify手数料<span class="stk-fixed-badge">自社EC×%</span></span>
+                <div class="stk-rate-result" id="stk-shopify-fee-disp"></div>
+              </div>
+              <div class="stk-fixed-input-wrap">
+                <input type="number" id="stk-fixed-shopify-rate" class="stk-fixed-input rate-input" value="4" step="0.1" oninput="STOCKTAKE.updateCalc()">
+                <span class="stk-fixed-prefix">%</span>
+              </div>
+            </div>
+            <div class="stk-fixed-row">
+              <span class="stk-fixed-label">その他雑費</span>
+              <div class="stk-fixed-input-wrap">
+                <span class="stk-fixed-prefix">¥</span>
+                <input type="number" id="stk-fixed-other" class="stk-fixed-input" value="30000" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /stk-input-col -->
+
+      <!-- ===== 右列：P&L サマリー ===== -->
+      <div class="stk-pl-col">
+
+        <!-- 月間売上合計 -->
+        <div class="stk-pl-block">
+          <div class="stk-pl-block-header rev">📈 月間売上合計</div>
+          <div class="stk-pl-block-body">
+            <div class="stk-pl-amount" id="pl-total-sales">¥0</div>
+            <div class="stk-pl-formula" id="pl-sales-detail">ZOZO ¥0 ＋ 自社EC ¥0</div>
+          </div>
+        </div>
+
+        <!-- 売上原価 -->
+        <div class="stk-pl-block">
+          <div class="stk-pl-block-header cogs">📉 売上原価</div>
+          <div class="stk-pl-block-body">
+            <div style="display:flex;align-items:baseline;gap:14px;">
+              <div class="stk-pl-amount" id="pl-cogs">¥0</div>
+              <div class="stk-pl-ratio" id="pl-cogs-ratio" style="color:#9a3412;">0.0%</div>
+            </div>
+            <div class="stk-pl-formula" id="pl-cogs-detail">前月棚卸し ¥0 ＋ 仕入れ ¥0 ー 期末棚卸し ¥0</div>
+          </div>
+        </div>
+
+        <!-- アイエント手数料 -->
+        <div class="stk-pl-block">
+          <div class="stk-pl-block-header comm">🏢 アイエント手数料</div>
+          <div class="stk-pl-block-body">
+            <div class="stk-pl-amount" id="pl-ient-fee">¥0</div>
+            <div class="stk-pl-formula" id="pl-ient-detail">ZOZO ¥0 × 45%</div>
+          </div>
+        </div>
+
+        <!-- 売上総利益 -->
+        <div class="stk-pl-block">
+          <div class="stk-pl-block-header gross">💚 売上総利益</div>
+          <div class="stk-pl-block-body">
+            <div class="stk-pl-amount" id="pl-gross-profit">¥0</div>
+            <div class="stk-pl-formula" id="pl-gross-detail">売上 ¥0 ー 売上原価 ¥0 ー アイエント手数料 ¥0</div>
+          </div>
+        </div>
+
+        <!-- 広告比率 -->
+        <div class="stk-pl-block">
+          <div class="stk-pl-block-header comm">📣 広告比率</div>
+          <div class="stk-pl-block-body" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#9ca3af;margin-bottom:4px;">売上合計に対する広告費率</div>
+              <div class="stk-pl-ratio" id="pl-ad-ratio-total" style="font-size:20px;color:#6d28d9;">0.0%</div>
+              <div class="stk-pl-sub" id="pl-ad-ratio-total-detail">広告費 ¥0 ÷ 月間売上合計 ¥0</div>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#9ca3af;margin-bottom:4px;">自社ECに対する広告費率</div>
+              <div class="stk-pl-ratio" id="pl-ad-ratio-ec" style="font-size:20px;color:#6d28d9;">0.0%</div>
+              <div class="stk-pl-sub" id="pl-ad-ratio-ec-detail">広告費 ¥0 ÷ 自社EC ¥0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 販管費合計 -->
+        <div class="stk-pl-block">
+          <div class="stk-pl-block-header sga">📋 販管費合計</div>
+          <div class="stk-pl-block-body">
+            <div class="stk-pl-amount" id="pl-sga">¥800,000</div>
+            <div class="stk-pl-formula" id="pl-sga-detail">広告費 ¥0 ＋ 人件費 ¥700,000 ＋ アイエント月額 ¥70,000 ＋ Shopify ¥0 ＋ 雑費 ¥30,000</div>
+          </div>
+        </div>
+
+        <!-- 営業利益（メインカード） -->
+        <div class="stk-pl-block" id="pl-op-card">
+          <div class="stk-pl-block-header op">🎯 営業利益</div>
+          <div class="stk-pl-block-body" style="padding:18px;">
+            <div class="stk-pl-amount op-amount" id="pl-op-profit">¥0</div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+              <span style="font-size:12px;color:#94a3b8;font-weight:600;">営業利益率</span>
+              <span class="stk-pl-ratio" id="pl-op-ratio">0.0%</span>
+            </div>
+            <div class="stk-pl-formula" id="pl-op-detail" style="margin-top:10px;">売上総利益 ¥0 ー 販管費 ¥0</div>
+          </div>
+        </div>
+
+      </div><!-- /stk-pl-col -->
+    </div><!-- /stk-main-grid -->
+
+    <!-- ===== 過去の棚卸しデータ ===== -->
+    <div class="stk-history-section">
+      <div class="stk-history-header">
+        🗂️ 過去の棚卸しデータ
+        <span id="stk-history-count" style="font-size:11px;font-weight:600;background:rgba(255,255,255,0.15);border-radius:20px;padding:2px 10px;margin-left:8px;">0件</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="stk-history-table">
+          <thead>
+            <tr>
+              <th>対象月</th>
+              <th>月間売上</th>
+              <th>売上原価</th>
+              <th>原価率</th>
+              <th>アイエント<br>手数料</th>
+              <th>売上総利益</th>
+              <th>販管費</th>
+              <th>営業利益</th>
+              <th>利益率</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="stk-history-tbody">
+            <tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:28px;font-size:13px;">まだデータがありません。入力後「確定保存」してください。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /page-stocktake -->
+
   <!-- ===== ページ: マニュアル ===== -->
   <div id="page-manual" style="display:none">
     <div class="mnl-wrap">
@@ -3239,7 +3614,7 @@ function updateSalesSyncStatus() {
 }
 
 // ===== ページ切替 =====
-const PAGE_IDS = ['dashboard','analysis','shipping','sns','image','shopify','ads','connections','product','strategy','manual','productmaster','imagedb'];
+const PAGE_IDS = ['dashboard','analysis','shipping','sns','image','shopify','ads','connections','product','strategy','stocktake','manual','productmaster','imagedb'];
 const NAV_IDS  = { analysis:'navAnalysis', shipping:'navShipping' };
 function switchPage(page) {
   PAGE_IDS.forEach(p => {
@@ -3265,6 +3640,7 @@ function switchPage(page) {
   if (page === 'image') { IMGTOOL.init(); }
   if (page === 'product') { PRODTOOL.init(); }
   if (page === 'strategy') { STRATOOLv2.init(); }
+  if (page === 'stocktake') { STOCKTAKE.init(); }
   if (page === 'connections') { claudeApiRefreshUI(); }
   if (page === 'imagedb') { renderImageDbTable(); }
   if (page === 'productmaster') { renderProductmasterTable(); }
@@ -6068,6 +6444,8 @@ document.addEventListener('DOMContentLoaded', () => {
       updateDbSidebarStatus(0);
     }
   } catch(e) { console.warn('localStorage読み込みエラー:', e); updateDbSidebarStatus(0); }
+  // 月末棚卸しデータを復元
+  STOCKTAKE.load();
   // ダッシュボードデータを復元
   loadDashData();
   refreshDashboard();
@@ -6078,6 +6456,311 @@ document.addEventListener('DOMContentLoaded', () => {
   // デフォルト表示：ダッシュボード
   switchPage('dashboard');
 });
+
+// ===================================================================
+// ===== STOCKTAKE MODULE: 月末棚卸し & 月次損益計算 =====
+// ===================================================================
+const STOCKTAKE = (() => {
+  const LS_KEY = 'mushwear_stocktake_v1';
+  let records = [];
+  let editingId = null;
+
+  // ---- ユーティリティ ----
+  const fmt   = n => '¥' + Math.round(n || 0).toLocaleString('ja-JP');
+  const pct   = n => ((n || 0) * 100).toFixed(1) + '%';
+  const setText = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  const parseVal = id => { const el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; };
+
+  // ---- フォームデータ取得 ----
+  function getFormData() {
+    return {
+      month:         document.getElementById('stk-month')?.value || '',
+      prevInventory: parseVal('stk-prev-inv'),
+      purchase:      parseVal('stk-purchase'),
+      invZozo:       parseVal('stk-inv-zozo'),
+      invCkbB2b:     parseVal('stk-inv-ckb-b2b'),
+      invCkbD2c:     parseVal('stk-inv-ckb-d2c'),
+      invChina:      parseVal('stk-inv-china'),
+      invTransit:    parseVal('stk-inv-transit'),
+      salesZozo:     parseVal('stk-sales-zozo'),
+      salesEc:       parseVal('stk-sales-ec'),
+      adCost:        parseVal('stk-ad-cost'),
+      fixedLabor:    parseVal('stk-fixed-labor')    || 700000,
+      fixedIent:     parseVal('stk-fixed-ient')     || 70000,
+      shopifyRate:   parseVal('stk-fixed-shopify-rate') / 100 || 0.04,
+      fixedOther:    parseVal('stk-fixed-other')    || 30000,
+    };
+  }
+
+  // ---- 損益計算 ----
+  function calc(d) {
+    const totalInventory  = d.invZozo + (d.invCkbB2b||0) + (d.invCkbD2c||0) + d.invChina + d.invTransit;
+    const totalSales      = d.salesZozo + d.salesEc;
+    const cogs            = d.prevInventory + d.purchase - totalInventory;
+    const cogsRatio       = totalSales > 0 ? cogs / totalSales : 0;
+    const ientCommission  = d.salesZozo * 0.45;
+    const grossProfit     = totalSales - cogs - ientCommission;
+    const fixedLabor      = d.fixedLabor;
+    const fixedIentFee    = d.fixedIent;
+    const shopifyFee      = d.salesEc * d.shopifyRate;
+    const otherExpenses   = d.fixedOther;
+    const sgaTotal        = d.adCost + fixedLabor + fixedIentFee + shopifyFee + otherExpenses;
+    const opProfit        = grossProfit - sgaTotal;
+    const opProfitRatio   = totalSales > 0 ? opProfit / totalSales : 0;
+    const adRatioTotal    = totalSales > 0 ? d.adCost / totalSales : 0;
+    const adRatioEc       = d.salesEc > 0  ? d.adCost / d.salesEc  : 0;
+    return { totalInventory, totalSales, cogs, cogsRatio, ientCommission, grossProfit,
+             shopifyFee, otherExpenses, sgaTotal, opProfit, opProfitRatio, adRatioTotal, adRatioEc };
+  }
+
+  // ---- リアルタイム計算表示更新 ----
+  function updateCalc() {
+    const d = getFormData();
+    const r = calc(d);
+
+    // フォーム内サブ合計
+    const invTotEl = document.getElementById('stk-inv-total');
+    if (invTotEl) invTotEl.textContent = fmt(r.totalInventory);
+    const salTotEl = document.getElementById('stk-sales-total');
+    if (salTotEl) salTotEl.textContent = fmt(r.totalSales);
+
+    // Shopify手数料をフォーム内に表示
+    const shopifyDispEl = document.getElementById('stk-shopify-fee-disp');
+    if (shopifyDispEl) shopifyDispEl.textContent = `→ ${fmt(r.shopifyFee)}（自社EC ${fmt(d.salesEc)} × ${(d.shopifyRate*100).toFixed(1)}%）`;
+
+    // P&L サマリー
+    setText('pl-total-sales',  fmt(r.totalSales));
+    setText('pl-sales-detail', `ZOZO ${fmt(d.salesZozo)} ＋ 自社EC ${fmt(d.salesEc)}`);
+
+    setText('pl-cogs',         fmt(r.cogs));
+    setText('pl-cogs-ratio',   pct(r.cogsRatio));
+    setText('pl-cogs-detail',  `前月棚卸し ${fmt(d.prevInventory)} ＋ 仕入れ ${fmt(d.purchase)} ー 期末棚卸し ${fmt(r.totalInventory)}`);
+
+    setText('pl-ient-fee',     fmt(r.ientCommission));
+    setText('pl-ient-detail',  `ZOZO ${fmt(d.salesZozo)} × 45%`);
+
+    setText('pl-gross-profit', fmt(r.grossProfit));
+    setText('pl-gross-detail', `売上 ${fmt(r.totalSales)} ー 売上原価 ${fmt(r.cogs)} ー アイエント手数料 ${fmt(r.ientCommission)}`);
+
+    // 広告比率
+    setText('pl-ad-ratio-total',        pct(r.adRatioTotal));
+    setText('pl-ad-ratio-total-detail', `広告費 ${fmt(d.adCost)} ÷ 月間売上合計 ${fmt(r.totalSales)}`);
+    setText('pl-ad-ratio-ec',           pct(r.adRatioEc));
+    setText('pl-ad-ratio-ec-detail',    `広告費 ${fmt(d.adCost)} ÷ 自社EC ${fmt(d.salesEc)}`);
+
+    setText('pl-sga',          fmt(r.sgaTotal));
+    setText('pl-sga-detail',   `広告費 ${fmt(d.adCost)} ＋ 人件費 ¥700,000 ＋ アイエント月額 ¥70,000 ＋ Shopify ${fmt(r.shopifyFee)} ＋ 雑費 ¥30,000`);
+
+    // 営業利益（色分け）
+    const opEl = document.getElementById('pl-op-profit');
+    if (opEl) {
+      opEl.textContent = fmt(r.opProfit);
+      opEl.className = 'stk-pl-amount op-amount ' + (r.opProfit >= 0 ? 'pos' : 'neg');
+    }
+    const opRatioEl = document.getElementById('pl-op-ratio');
+    if (opRatioEl) {
+      opRatioEl.textContent = pct(r.opProfitRatio);
+      opRatioEl.className   = 'stk-pl-ratio ' + (r.opProfit >= 0 ? 'pos' : 'neg');
+    }
+    setText('pl-op-detail', `売上総利益 ${fmt(r.grossProfit)} ー 販管費 ${fmt(r.sgaTotal)}`);
+  }
+
+  // ---- 保存 ----
+  function saveRecord() {
+    const d = getFormData();
+    if (!d.month) { alert('対象月を選択してください'); return; }
+
+    const r = calc(d);
+    const record = {
+      id:          editingId || ('stk_' + Date.now()),
+      savedAt:     new Date().toISOString(),
+      month:       d.month,
+      prevInventory: d.prevInventory,
+      purchase:    d.purchase,
+      invZozo:     d.invZozo,
+      invCkbB2b:   d.invCkbB2b,
+      invCkbD2c:   d.invCkbD2c,
+      invChina:    d.invChina,
+      invTransit:  d.invTransit,
+      salesZozo:   d.salesZozo,
+      salesEc:     d.salesEc,
+      adCost:      d.adCost,
+      fixedLabor:  d.fixedLabor,
+      fixedIent:   d.fixedIent,
+      shopifyRate: d.shopifyRate,
+      fixedOther:  d.fixedOther,
+      // 計算結果
+      totalInventory:  r.totalInventory,
+      totalSales:      r.totalSales,
+      cogs:            r.cogs,
+      cogsRatio:       r.cogsRatio,
+      ientCommission:  r.ientCommission,
+      grossProfit:     r.grossProfit,
+      shopifyFee:      r.shopifyFee,
+      sgaTotal:        r.sgaTotal,
+      opProfit:        r.opProfit,
+      opProfitRatio:   r.opProfitRatio,
+      adRatioTotal:    r.adRatioTotal,
+      adRatioEc:       r.adRatioEc,
+    };
+
+    if (editingId) {
+      const idx = records.findIndex(x => x.id === editingId);
+      if (idx >= 0) records[idx] = record;
+      else records.unshift(record);
+    } else {
+      const monthIdx = records.findIndex(x => x.month === d.month);
+      if (monthIdx >= 0) {
+        if (!confirm(d.month + ' のデータは既に存在します。上書きしますか？')) return;
+        records[monthIdx] = record;
+      } else {
+        records.unshift(record);
+      }
+    }
+
+    records.sort((a, b) => b.month.localeCompare(a.month));
+    localStorage.setItem(LS_KEY, JSON.stringify(records));
+
+    editingId = null;
+    hideBanner();
+    renderHistory();
+    alert('✅ ' + d.month + ' のデータを保存しました！');
+  }
+
+  // ---- 編集 ----
+  function editRecord(id) {
+    const rec = records.find(r => r.id === id);
+    if (!rec) return;
+    editingId = id;
+
+    const setVal = (elId, v) => { const el = document.getElementById(elId); if(el) el.value = v || 0; };
+    document.getElementById('stk-month').value = rec.month;
+    setVal('stk-prev-inv',   rec.prevInventory);
+    setVal('stk-purchase',   rec.purchase);
+    setVal('stk-inv-zozo',       rec.invZozo);
+    setVal('stk-inv-ckb-b2b',   rec.invCkbB2b);
+    setVal('stk-inv-ckb-d2c',   rec.invCkbD2c);
+    setVal('stk-inv-china',     rec.invChina);
+    setVal('stk-inv-transit',rec.invTransit);
+    setVal('stk-sales-zozo', rec.salesZozo);
+    setVal('stk-sales-ec',   rec.salesEc);
+    setVal('stk-ad-cost',              rec.adCost);
+    setVal('stk-fixed-labor',          rec.fixedLabor  ?? 700000);
+    setVal('stk-fixed-ient',           rec.fixedIent   ?? 70000);
+    setVal('stk-fixed-shopify-rate',   rec.shopifyRate != null ? (rec.shopifyRate * 100).toFixed(1) : 4);
+    setVal('stk-fixed-other',          rec.fixedOther  ?? 30000);
+
+    updateCalc();
+    showBanner(rec.month);
+    document.getElementById('page-stocktake').scrollTop = 0;
+  }
+
+  // ---- 削除 ----
+  function deleteRecord(id) {
+    const rec = records.find(r => r.id === id);
+    if (!rec) return;
+    if (!confirm(rec.month + ' のデータを削除しますか？')) return;
+    records = records.filter(r => r.id !== id);
+    localStorage.setItem(LS_KEY, JSON.stringify(records));
+    renderHistory();
+  }
+
+  // ---- キャンセル ----
+  function cancelEdit() {
+    editingId = null;
+    hideBanner();
+    clearForm();
+    updateCalc();
+  }
+
+  // ---- バナー表示管理 ----
+  function showBanner(month) {
+    const banner = document.getElementById('stk-edit-banner');
+    const cancelBtn = document.getElementById('stk-cancel-btn');
+    if (banner) { banner.style.display = ''; }
+    if (cancelBtn) { cancelBtn.style.display = ''; }
+    setText('stk-edit-month-label', month);
+  }
+  function hideBanner() {
+    const banner = document.getElementById('stk-edit-banner');
+    const cancelBtn = document.getElementById('stk-cancel-btn');
+    if (banner) banner.style.display = 'none';
+    if (cancelBtn) cancelBtn.style.display = 'none';
+  }
+
+  // ---- フォームクリア ----
+  function clearForm() {
+    ['stk-prev-inv','stk-purchase','stk-inv-zozo','stk-inv-ckb-b2b','stk-inv-ckb-d2c',
+     'stk-inv-china','stk-inv-transit','stk-sales-zozo','stk-sales-ec','stk-ad-cost']
+      .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    // 固定費はデフォルト値にリセット
+    const setFixed = (id, v) => { const el = document.getElementById(id); if(el) el.value = v; };
+    setFixed('stk-fixed-labor',        700000);
+    setFixed('stk-fixed-ient',         70000);
+    setFixed('stk-fixed-shopify-rate', 4);
+    setFixed('stk-fixed-other',        30000);
+    // 当月をデフォルト設定
+    const now = new Date();
+    const mEl = document.getElementById('stk-month');
+    if (mEl) mEl.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    // 直近レコードの期末棚卸し額を先月分として自動セット
+    if (records.length > 0) {
+      const prevEl = document.getElementById('stk-prev-inv');
+      if (prevEl && !prevEl.value) prevEl.value = records[0].totalInventory || '';
+    }
+  }
+
+  // ---- 過去データ一覧レンダリング ----
+  function renderHistory() {
+    const tbody = document.getElementById('stk-history-tbody');
+    const countEl = document.getElementById('stk-history-count');
+    if (!tbody) return;
+
+    if (countEl) countEl.textContent = records.length + '件';
+
+    if (records.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:28px;font-size:13px;">まだデータがありません。入力後「確定保存」してください。</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = records.map(r => `
+      <tr>
+        <td>${r.month}</td>
+        <td>${fmt(r.totalSales)}</td>
+        <td>${fmt(r.cogs)}</td>
+        <td style="text-align:center;">${pct(r.cogsRatio)}</td>
+        <td>${fmt(r.ientCommission)}</td>
+        <td>${fmt(r.grossProfit)}</td>
+        <td>${fmt(r.sgaTotal)}</td>
+        <td class="${r.opProfit >= 0 ? 'stk-td-pos' : 'stk-td-neg'}">${fmt(r.opProfit)}</td>
+        <td class="${r.opProfit >= 0 ? 'stk-td-pos' : 'stk-td-neg'}" style="text-align:center;">${pct(r.opProfitRatio)}</td>
+        <td>
+          <button class="stk-action-btn edit" onclick="STOCKTAKE.editRecord('${r.id}')">修正</button>
+          <button class="stk-action-btn del" onclick="STOCKTAKE.deleteRecord('${r.id}')">削除</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ---- ロード ----
+  function load() {
+    try {
+      const saved = localStorage.getItem(LS_KEY);
+      if (saved) records = JSON.parse(saved);
+    } catch(e) { records = []; }
+  }
+
+  // ---- init（ページ切り替え時に呼ばれる） ----
+  function init() {
+    clearForm();
+    updateCalc();
+    renderHistory();
+    hideBanner();
+    editingId = null;
+  }
+
+  return { init, load, updateCalc, saveRecord, editRecord, deleteRecord, cancelEdit };
+})();
 </script>
 </body>
 </html>
