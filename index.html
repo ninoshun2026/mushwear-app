@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -747,6 +748,57 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
 .mnl-sidebar-mock .s-item { display: flex; align-items: center; gap: 8px; padding: 8px 14px; font-size: 11px; color: rgba(255,255,255,0.5); }
 .mnl-sidebar-mock .s-item.active { background: rgba(59,130,246,0.2); color: #fff; border-left: 3px solid #3b82f6; }
 .mnl-layout-mock { display: flex; gap: 12px; align-items: flex-start; }
+
+/* ===== 月末棚卸し タブ ===== */
+.stk-tab-bar { display:flex; gap:4px; margin-bottom:20px; background:#e5e7eb; border-radius:12px; padding:4px; width:fit-content; }
+.stk-tab { padding:9px 22px; border-radius:9px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:transparent; color:#6b7280; transition:all 0.15s; }
+.stk-tab.active { background:#fff; color:#1f2937; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
+.stk-tab:hover:not(.active) { color:#374151; }
+
+/* ===== 月次推移損益計算書 ===== */
+.pl-kpi-row { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:20px; }
+@media(max-width:1100px){ .pl-kpi-row { grid-template-columns:repeat(3,1fr); } }
+.pl-kpi-card { background:#fff; border-radius:12px; padding:16px 18px; border:1.5px solid #e5e7eb; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+.pl-kpi-label { font-size:11px; font-weight:700; color:#9ca3af; margin-bottom:6px; letter-spacing:0.3px; }
+.pl-kpi-value { font-size:20px; font-weight:900; line-height:1; margin-bottom:4px; }
+.pl-kpi-value.blue   { color:#2563eb; }
+.pl-kpi-value.orange { color:#d97706; }
+.pl-kpi-value.green  { color:#059669; }
+.pl-kpi-value.red    { color:#dc2626; }
+.pl-kpi-value.purple { color:#7c3aed; }
+.pl-kpi-ratio { font-size:11px; color:#9ca3af; }
+
+.pl-charts-row { display:grid; grid-template-columns:1fr 320px; gap:16px; margin-bottom:20px; }
+@media(max-width:1000px){ .pl-charts-row { grid-template-columns:1fr; } }
+.pl-chart-card { background:#fff; border-radius:14px; padding:20px; border:1.5px solid #e5e7eb; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+.pl-chart-title { font-size:12px; font-weight:800; color:#374151; margin-bottom:14px; }
+
+.pl-table-wrap { background:#fff; border-radius:14px; border:1.5px solid #e5e7eb; box-shadow:0 1px 4px rgba(0,0,0,0.06); overflow:hidden; }
+.pl-table-header { padding:14px 20px; background:linear-gradient(135deg,#1e293b,#334155); color:#f1f5f9; font-size:14px; font-weight:800; }
+.pl-detail-table { width:100%; border-collapse:collapse; font-size:12px; overflow-x:auto; }
+.pl-detail-table th { padding:9px 14px; background:#f8fafc; color:#374151; font-weight:800; text-align:right; border-bottom:2px solid #e5e7eb; white-space:nowrap; font-size:11px; position:sticky; top:0; }
+.pl-detail-table th:first-child { text-align:left; position:sticky; left:0; background:#f8fafc; z-index:2; min-width:160px; }
+.pl-detail-table th.th-cum { background:#eef2ff; color:#3730a3; }
+.pl-detail-table th.th-ratio { background:#f0fdf4; color:#166534; width:72px; }
+.pl-detail-table td { padding:8px 14px; border-bottom:1px solid #f3f4f6; text-align:right; color:#374151; white-space:nowrap; }
+.pl-detail-table td:first-child { text-align:left; position:sticky; left:0; background:#fff; z-index:1; font-weight:600; padding-left:14px; }
+.pl-detail-table tr.pl-row-sub td { color:#6b7280; font-size:11px; }
+.pl-detail-table tr.pl-row-sub td:first-child { padding-left:28px; font-weight:500; }
+.pl-detail-table tr.pl-row-header td { font-weight:900; }
+.pl-detail-table tr.pl-row-header td:first-child { font-weight:900; }
+.pl-row-sales   td { background:#eff6ff !important; color:#1e40af !important; font-weight:900 !important; font-size:13px; }
+.pl-row-sales   td:first-child { background:#eff6ff !important; }
+.pl-row-cogs    td { background:#fff7ed !important; color:#9a3412 !important; font-weight:900 !important; font-size:13px; }
+.pl-row-cogs    td:first-child { background:#fff7ed !important; }
+.pl-row-gross   td { background:#ecfdf5 !important; color:#065f46 !important; font-weight:900 !important; font-size:13px; }
+.pl-row-gross   td:first-child { background:#ecfdf5 !important; }
+.pl-row-sga     td { background:#fff1f2 !important; color:#9f1239 !important; font-weight:900 !important; font-size:13px; }
+.pl-row-sga     td:first-child { background:#fff1f2 !important; }
+.pl-row-op      td { background:#1e293b !important; color:#f1f5f9 !important; font-weight:900 !important; font-size:13px; }
+.pl-row-op      td:first-child { background:#1e293b !important; }
+.pl-neg         { color:#dc2626 !important; }
+.pl-pos         { color:#059669 !important; }
+.pl-no-data { text-align:center; padding:48px; color:#9ca3af; font-size:14px; }
 
 /* ===== 月末棚卸しページ ===== */
 #page-stocktake { background:#f0f2f7; min-height:100%; padding:28px 32px; overflow-y:auto; }
@@ -2173,12 +2225,21 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
         <div class="stk-page-title">📋 月末棚卸し</div>
         <div class="stk-page-sub">月次在庫評価 &amp; 損益計算書</div>
       </div>
-      <div class="stk-header-actions">
+      <div class="stk-header-actions" id="stk-form-actions">
         <input type="month" id="stk-month" class="stk-month-input">
         <button class="stk-btn-cancel" id="stk-cancel-btn" style="display:none" onclick="STOCKTAKE.cancelEdit()">キャンセル</button>
         <button class="stk-btn-save" onclick="STOCKTAKE.saveRecord()">💾 確定保存</button>
       </div>
     </div>
+
+    <!-- タブバー -->
+    <div class="stk-tab-bar">
+      <button class="stk-tab active" id="stk-tab-form" onclick="STOCKTAKE.switchTab('form')">📋 月次棚卸し入力</button>
+      <button class="stk-tab" id="stk-tab-pl" onclick="STOCKTAKE.switchTab('pl')">📊 月次推移損益計算書</button>
+    </div>
+
+    <!-- ===== フォームパネル ===== -->
+    <div id="stk-panel-form">
 
     <!-- 編集中バナー -->
     <div class="stk-edit-banner" id="stk-edit-banner" style="display:none">
@@ -2454,6 +2515,74 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
         </table>
       </div>
     </div>
+
+    </div><!-- /stk-panel-form -->
+
+    <!-- ===== 月次推移損益計算書パネル ===== -->
+    <div id="stk-panel-pl" style="display:none">
+
+      <!-- データなし -->
+      <div id="pl-no-data-msg" class="pl-no-data" style="display:none">
+        📋 データがありません。まず「月次棚卸し入力」タブからデータを保存してください。
+      </div>
+
+      <!-- KPIサマリー -->
+      <div class="pl-kpi-row" id="pl-kpi-row">
+        <div class="pl-kpi-card">
+          <div class="pl-kpi-label">純売上高（累計）</div>
+          <div class="pl-kpi-value blue" id="pl-kpi-sales">¥—</div>
+          <div class="pl-kpi-ratio" id="pl-kpi-sales-r">構成比 100.0%</div>
+        </div>
+        <div class="pl-kpi-card">
+          <div class="pl-kpi-label">売上原価（累計）</div>
+          <div class="pl-kpi-value orange" id="pl-kpi-cogs">¥—</div>
+          <div class="pl-kpi-ratio" id="pl-kpi-cogs-r"></div>
+        </div>
+        <div class="pl-kpi-card">
+          <div class="pl-kpi-label">売上総利益（累計）</div>
+          <div class="pl-kpi-value green" id="pl-kpi-gross">¥—</div>
+          <div class="pl-kpi-ratio" id="pl-kpi-gross-r"></div>
+        </div>
+        <div class="pl-kpi-card">
+          <div class="pl-kpi-label">販管費（累計）</div>
+          <div class="pl-kpi-value red" id="pl-kpi-sga">¥—</div>
+          <div class="pl-kpi-ratio" id="pl-kpi-sga-r"></div>
+        </div>
+        <div class="pl-kpi-card">
+          <div class="pl-kpi-label">営業利益（累計）</div>
+          <div class="pl-kpi-value purple" id="pl-kpi-op">¥—</div>
+          <div class="pl-kpi-ratio" id="pl-kpi-op-r"></div>
+        </div>
+      </div>
+
+      <!-- チャート行 -->
+      <div class="pl-charts-row">
+        <div class="pl-chart-card">
+          <div class="pl-chart-title">売上高・粗利・営業利益 月次推移</div>
+          <div style="position:relative;height:260px;">
+            <canvas id="pl-trend-chart"></canvas>
+          </div>
+        </div>
+        <div class="pl-chart-card">
+          <div class="pl-chart-title">累計 損益構造（構成比）</div>
+          <div style="position:relative;height:240px;">
+            <canvas id="pl-donut-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 月次明細テーブル -->
+      <div class="pl-table-wrap">
+        <div class="pl-table-header">📋 EC事業 損益計算書（月次明細）</div>
+        <div style="overflow-x:auto;">
+          <table class="pl-detail-table">
+            <thead id="pl-table-head"></thead>
+            <tbody id="pl-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /stk-panel-pl -->
 
   </div><!-- /page-stocktake -->
 
@@ -6766,21 +6895,242 @@ const STOCKTAKE = (() => {
   // ---- ロード ----
   function load() {
     try {
-      const saved = localStorage.getItem(LS_KEY);
-      if (saved) records = JSON.parse(saved);
+      // 旧キーも含めて探索（データ移行対応）
+      const SEARCH_KEYS = ['mushwear_stocktake_v1', 'mushwear_stocktake', 'stocktake_v1', 'stocktake'];
+      let saved = null;
+      let foundKey = null;
+      for (const k of SEARCH_KEYS) {
+        const v = localStorage.getItem(k);
+        if (v && v !== '[]') { saved = v; foundKey = k; break; }
+      }
+      if (saved) {
+        let parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed)) parsed = [];
+        // 旧データ後方互換: invCkb → invCkbB2b に移行
+        records = parsed.map(r => {
+          if (r.invCkb !== undefined && r.invCkbB2b === undefined) {
+            r.invCkbB2b = r.invCkb;
+            r.invCkbD2c = 0;
+            delete r.invCkb;
+          }
+          return r;
+        });
+        // 旧キーで見つかった場合は新キーにコピー保存
+        if (foundKey !== LS_KEY && records.length > 0) {
+          localStorage.setItem(LS_KEY, JSON.stringify(records));
+        }
+      } else {
+        records = [];
+      }
     } catch(e) { records = []; }
   }
 
   // ---- init（ページ切り替え時に呼ばれる） ----
   function init() {
+    load(); // ← 毎回localStorageから再読み込み（データ消失対策）
     clearForm();
     updateCalc();
-    renderHistory();
     hideBanner();
     editingId = null;
+    switchTab('form'); // フォームタブをデフォルトに（パネルを表示してからrenderHistory）
+    renderHistory();   // ← switchTab後に呼ぶことで表示パネルに確実に描画
   }
 
-  return { init, load, updateCalc, saveRecord, editRecord, deleteRecord, cancelEdit };
+  // ---- チャートインスタンス管理 ----
+  let trendChartInst = null;
+  let donutChartInst = null;
+
+  // ---- タブ切り替え ----
+  function switchTab(tab) {
+    const formPanel = document.getElementById('stk-panel-form');
+    const plPanel   = document.getElementById('stk-panel-pl');
+    const formActs  = document.getElementById('stk-form-actions');
+    const tabForm   = document.getElementById('stk-tab-form');
+    const tabPl     = document.getElementById('stk-tab-pl');
+    if (!formPanel || !plPanel) return; // nullガード（要素が未初期化の場合は何もしない）
+    if (tab === 'form') {
+      formPanel.style.display = '';
+      plPanel.style.display   = 'none';
+      if (formActs) formActs.style.display = '';
+      if (tabForm) tabForm.classList.add('active');
+      if (tabPl)   tabPl.classList.remove('active');
+    } else {
+      formPanel.style.display = 'none';
+      plPanel.style.display   = '';
+      if (formActs) formActs.style.display = 'none';
+      if (tabForm) tabForm.classList.remove('active');
+      if (tabPl)   tabPl.classList.add('active');
+      renderPLReport();
+    }
+  }
+
+  // ---- 月次推移損益計算書レンダリング ----
+  function renderPLReport() {
+    const sorted = [...records].sort((a,b) => a.month.localeCompare(b.month)); // 古い順
+    const noDataEl = document.getElementById('pl-no-data-msg');
+    const kpiRow   = document.getElementById('pl-kpi-row');
+
+    if (sorted.length === 0) {
+      if (noDataEl) noDataEl.style.display = '';
+      if (kpiRow)   kpiRow.style.display   = 'none';
+      return;
+    }
+    if (noDataEl) noDataEl.style.display = 'none';
+    if (kpiRow)   kpiRow.style.display   = '';
+
+    // 各月の計算値を整理（売上原価にアイエント手数料を含める形式）
+    const months = sorted.map(r => {
+      const cogsTotal = (r.cogs || 0) + (r.ientCommission || 0); // 売上原価（参照レポート方式）
+      return {
+        month:        r.month,
+        sales:        r.totalSales      || 0,
+        salesZozo:    r.salesZozo       || 0,
+        salesEc:      r.salesEc         || 0,
+        prevInv:      r.prevInventory   || 0,
+        purchase:     r.purchase        || 0,
+        ient:         r.ientCommission  || 0,
+        endInv:       r.totalInventory  || 0,
+        cogs:         cogsTotal,
+        gross:        r.grossProfit     || 0,
+        adCost:       r.adCost          || 0,
+        fixedLabor:   r.fixedLabor      ?? 700000,
+        fixedIent:    r.fixedIent       ?? 70000,
+        shopifyFee:   r.shopifyFee      || (r.salesEc * (r.shopifyRate || 0.04)),
+        fixedOther:   r.fixedOther      ?? 30000,
+        sga:          r.sgaTotal        || 0,
+        opProfit:     r.opProfit        || 0,
+      };
+    });
+
+    // ---- 累計 ----
+    const sum = (key) => months.reduce((a, m) => a + (m[key]||0), 0);
+    const cumSales = sum('sales');
+    const cumCogs  = sum('cogs');
+    const cumGross = sum('gross');
+    const cumSga   = sum('sga');
+    const cumOp    = sum('opProfit');
+
+    // ---- KPIカード ----
+    const rPct = (n, base) => base ? (n/base*100).toFixed(1)+'%' : '—';
+    setText('pl-kpi-sales',   fmt(cumSales));
+    setText('pl-kpi-sales-r', '構成比 100.0%');
+    setText('pl-kpi-cogs',    fmt(cumCogs));
+    setText('pl-kpi-cogs-r',  '構成比 ' + rPct(cumCogs, cumSales));
+    setText('pl-kpi-gross',   fmt(cumGross));
+    setText('pl-kpi-gross-r', '構成比 ' + rPct(cumGross, cumSales));
+    setText('pl-kpi-sga',     fmt(cumSga));
+    setText('pl-kpi-sga-r',   '構成比 ' + rPct(cumSga, cumSales));
+    const opEl = document.getElementById('pl-kpi-op');
+    if (opEl) { opEl.textContent = fmt(cumOp); opEl.className = 'pl-kpi-value ' + (cumOp >= 0 ? 'purple' : 'red'); }
+    setText('pl-kpi-op-r',    '構成比 ' + rPct(cumOp, cumSales));
+
+    // ---- 月ラベル ----
+    const labels = months.map(m => {
+      const [y, mo] = m.month.split('-');
+      return y + '/' + mo + '月';
+    });
+
+    // ---- チャート1: 月次推移（棒＋折れ線）----
+    const trendEl = document.getElementById('pl-trend-chart');
+    if (trendEl) {
+      if (trendChartInst) { trendChartInst.destroy(); trendChartInst = null; }
+      trendChartInst = new Chart(trendEl, {
+        data: {
+          labels,
+          datasets: [
+            { type:'bar',  label:'売上高',    data: months.map(m=>m.sales),    backgroundColor:'rgba(147,197,253,0.7)', borderColor:'#3b82f6', borderWidth:1, yAxisID:'y' },
+            { type:'line', label:'売上総利益', data: months.map(m=>m.gross),    borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', tension:0.3, pointRadius:4, fill:true, yAxisID:'y' },
+            { type:'line', label:'営業利益',  data: months.map(m=>m.opProfit), borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,0.05)', tension:0.3, pointRadius:4, fill:false, yAxisID:'y' },
+          ]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          plugins: { legend:{ position:'bottom', labels:{ font:{size:11} } } },
+          scales: {
+            y: { ticks:{ callback: v => '¥'+(v/10000).toFixed(0)+'万', font:{size:10} }, grid:{color:'#f3f4f6'} }
+          }
+        }
+      });
+    }
+
+    // ---- チャート2: 損益構造ドーナツ ----
+    const donutEl = document.getElementById('pl-donut-chart');
+    if (donutEl) {
+      if (donutChartInst) { donutChartInst.destroy(); donutChartInst = null; }
+      const cogsNet  = sum('purchase');
+      const ientCum  = sum('ient');
+      const endInvCum= sum('endInv');
+      const adCum    = sum('adCost');
+      const laborCum = sum('fixedLabor');
+      const sgaRest  = sum('fixedIent') + sum('shopifyFee') + sum('fixedOther');
+      const opCum    = Math.max(0, cumOp);
+      donutChartInst = new Chart(donutEl, {
+        type:'doughnut',
+        data: {
+          labels: ['仕入高','販売代行手数料','棚卸差額','広告宣伝費','人件費','その他販管費','営業利益'],
+          datasets:[{ data:[cogsNet,ientCum,-(endInvCum-sum('prevInv')),adCum,laborCum,sgaRest,opCum].map(v=>Math.max(0,v)),
+            backgroundColor:['#60a5fa','#f97316','#34d399','#f87171','#a78bfa','#94a3b8','#10b981'],
+            borderWidth:2, borderColor:'#fff' }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false, cutout:'60%',
+          plugins: {
+            legend:{ position:'bottom', labels:{ font:{size:10}, padding:8, boxWidth:12 } },
+            tooltip:{ callbacks:{ label: ctx => ' ' + ctx.label + ': ¥' + Math.round(ctx.raw).toLocaleString('ja-JP') } }
+          }
+        }
+      });
+    }
+
+    // ---- 月次明細テーブル ----
+    const thead = document.getElementById('pl-table-head');
+    const tbody = document.getElementById('pl-table-body');
+    if (!thead || !tbody) return;
+
+    // ヘッダー行
+    thead.innerHTML = `<tr>
+      <th style="text-align:left;min-width:160px;">科目</th>
+      <th class="th-cum">累計金額</th>
+      <th class="th-ratio">構成比</th>
+      ${months.map(m => `<th>${m.month.replace('-','/')}</th>`).join('')}
+    </tr>`;
+
+    // 行定義
+    const R = (label, key, cls='', indent=false) => {
+      const cumVal = sum(key);
+      const vals   = months.map(m => m[key] || 0);
+      const isHead = cls.includes('pl-row-') && !cls.includes('sub');
+      const neg    = (v) => v < 0 ? ' pl-neg' : (v > 0 && (cls==='pl-row-op') ? ' pl-pos' : '');
+      return `<tr class="${cls}">
+        <td${indent?' style="padding-left:28px;"':''}>${label}</td>
+        <td class="${neg(cumVal)}">${fmtCell(cumVal)}</td>
+        <td style="text-align:center;font-size:11px;">${cumSales ? (cumVal/cumSales*100).toFixed(1)+'%' : '—'}</td>
+        ${vals.map(v=>`<td class="${neg(v)}">${fmtCell(v)}</td>`).join('')}
+      </tr>`;
+    };
+    const fmtCell = v => v === 0 ? '—' : (v < 0 ? '△'+Math.abs(Math.round(v)).toLocaleString('ja-JP') : Math.round(v).toLocaleString('ja-JP'));
+
+    tbody.innerHTML = [
+      R('【純売上高】',     'sales',      'pl-row-sales'),
+      `<tr class="pl-row-sub"><td style="padding-left:28px;">ZOZO</td><td>${fmtCell(sum('salesZozo'))}</td><td></td>${months.map(m=>`<td>${fmtCell(m.salesZozo)}</td>`).join('')}</tr>`,
+      `<tr class="pl-row-sub"><td style="padding-left:28px;">自社EC（Shopify）</td><td>${fmtCell(sum('salesEc'))}</td><td></td>${months.map(m=>`<td>${fmtCell(m.salesEc)}</td>`).join('')}</tr>`,
+      R('　期首棚卸高',     'prevInv',    'pl-row-sub'),
+      R('　仕入高',         'purchase',   'pl-row-sub'),
+      R('　販売代行手数料', 'ient',       'pl-row-sub'),
+      R('　期末棚卸高',     'endInv',     'pl-row-sub'),
+      R('【売上原価】',     'cogs',       'pl-row-cogs'),
+      R('【売上総利益】',   'gross',      'pl-row-gross'),
+      R('　広告宣伝費',     'adCost',     'pl-row-sub'),
+      R('　人件費など',     'fixedLabor', 'pl-row-sub'),
+      R('　アイエント月額', 'fixedIent',  'pl-row-sub'),
+      R('　Shopify手数料',  'shopifyFee', 'pl-row-sub'),
+      R('　その他雑費',     'fixedOther', 'pl-row-sub'),
+      R('【販売費及び一般管理費】', 'sga', 'pl-row-sga'),
+      R('【営業利益】',     'opProfit',   'pl-row-op'),
+    ].join('');
+  }
+
+  return { init, load, updateCalc, saveRecord, editRecord, deleteRecord, cancelEdit, switchTab };
 })();
 </script>
 </body>
