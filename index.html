@@ -137,7 +137,7 @@ body { font-family: 'Noto Sans JP', 'Helvetica Neue', 'Hiragino Kaku Gothic ProN
 .tab-content.active { display: block; }
 /* テーブル */
 .table-wrap { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
-.table-scroll { max-height: 500px; overflow-y: auto; }
+.table-scroll { height: 500px; max-height: none; overflow-y: auto; resize: vertical; min-height: 120px; }
 .table-scroll::-webkit-scrollbar { width: 6px; }
 .table-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -1387,6 +1387,8 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
       <input type="file" id="transitFileInput" accept=".xlsx,.xls" multiple style="display:none" onchange="[...this.files].forEach(f=>handleTransitFile(f));this.value=''">
       <!-- 取り込み済みファイルリスト -->
       <div id="transitFileList" style="display:none;margin-top:10px;"></div>
+      <!-- 在庫価格KPI -->
+      <div id="transitInvKpi" style="display:none;margin-top:8px;"></div>
     </div>
 
 
@@ -1430,6 +1432,8 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
         </div>
       </div>
     </div>
+    <!-- 在庫価格KPI -->
+    <div id="rankInventoryKpi" style="display:none;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px;"></div>
     <!-- サマリー -->
     <div id="rankSummary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;"></div>
     <!-- タブ -->
@@ -2274,52 +2278,6 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
           </div>
         </div>
 
-        <!-- 期末棚卸し在庫 -->
-        <div class="stk-card">
-          <div class="stk-card-header blue">🏭 期末棚卸し在庫金額</div>
-          <div class="stk-card-body">
-            <div class="stk-field">
-              <div class="stk-label">ZOZO倉庫</div>
-              <div class="stk-input-wrap">
-                <span class="stk-input-prefix">¥</span>
-                <input type="number" id="stk-inv-zozo" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
-              </div>
-            </div>
-            <div class="stk-field">
-              <div class="stk-label">CKBデポジット（B2B）</div>
-              <div class="stk-input-wrap">
-                <span class="stk-input-prefix">¥</span>
-                <input type="number" id="stk-inv-ckb-b2b" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
-              </div>
-            </div>
-            <div class="stk-field">
-              <div class="stk-label">CKBデポジット（D2C）</div>
-              <div class="stk-input-wrap">
-                <span class="stk-input-prefix">¥</span>
-                <input type="number" id="stk-inv-ckb-d2c" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
-              </div>
-            </div>
-            <div class="stk-field">
-              <div class="stk-label">中国発送前在庫</div>
-              <div class="stk-input-wrap">
-                <span class="stk-input-prefix">¥</span>
-                <input type="number" id="stk-inv-china" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
-              </div>
-            </div>
-            <div class="stk-field">
-              <div class="stk-label">配送中在庫（船便）</div>
-              <div class="stk-input-wrap">
-                <span class="stk-input-prefix">¥</span>
-                <input type="number" id="stk-inv-transit" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
-              </div>
-            </div>
-            <div class="stk-subtotal-row">
-              <span class="stk-subtotal-label">期末棚卸し合計</span>
-              <span class="stk-subtotal-val" id="stk-inv-total">¥0</span>
-            </div>
-          </div>
-        </div>
-
         <!-- 月間売上 -->
         <div class="stk-card">
           <div class="stk-card-header green">💰 月間売上</div>
@@ -2352,6 +2310,59 @@ tbody td { padding: 10px 14px; vertical-align: middle; }
                 <input type="number" id="stk-ient-actual" class="stk-input" placeholder="自動計算" oninput="STOCKTAKE.updateCalc()">
               </div>
               <div id="stk-ient-actual-hint" style="font-size:11px;color:#9ca3af;margin-top:4px;padding-left:2px;">現在: ZOZO ¥0 × 45% = ¥0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 期末棚卸し在庫 -->
+        <div class="stk-card">
+          <div class="stk-card-header blue">🏭 期末棚卸し在庫金額</div>
+          <div class="stk-card-body">
+            <div class="stk-field">
+              <div class="stk-label">ZOZO倉庫</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-zozo" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">CKBデポジット（B2B）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-ckb-b2b" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">CKBデポジット（D2C）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-ckb-d2c" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label" style="display:flex;align-items:center;gap:8px;">
+                中国発送前在庫
+                <label style="cursor:pointer;font-size:11px;font-weight:700;background:#3b82f6;color:#fff;border-radius:5px;padding:2px 8px;white-space:nowrap;" title="在庫視点‐CKB SKU_.xlsをアップロードして自動計算">
+                  📂 XLSから自動計算
+                  <input type="file" accept=".xls,.xlsx" style="display:none" onchange="STOCKTAKE.loadChinaInv(event)">
+                </label>
+              </div>
+              <div id="stk-china-status" style="font-size:11px;color:#6b7280;margin-bottom:4px;display:none;"></div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-china" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-field">
+              <div class="stk-label">配送中在庫（船便）</div>
+              <div class="stk-input-wrap">
+                <span class="stk-input-prefix">¥</span>
+                <input type="number" id="stk-inv-transit" class="stk-input" placeholder="0" oninput="STOCKTAKE.updateCalc()">
+              </div>
+            </div>
+            <div class="stk-subtotal-row">
+              <span class="stk-subtotal-label">期末棚卸し合計</span>
+              <span class="stk-subtotal-val" id="stk-inv-total">¥0</span>
             </div>
           </div>
         </div>
@@ -4461,6 +4472,8 @@ function _updateTransitUI() {
   if (transitFiles.length === 0) {
     listEl.style.display = 'none';
     clearBtn.style.display = 'none';
+    const kpiElEmpty = document.getElementById('transitInvKpi');
+    if (kpiElEmpty) kpiElEmpty.style.display = 'none';
     return;
   }
   clearBtn.style.display = 'inline-block';
@@ -4486,6 +4499,47 @@ function _updateTransitUI() {
   html += `</div>`;
   listEl.innerHTML = html;
   listEl.style.display = 'block';
+
+  // 在庫価格KPI（総販売価格・総在庫原価）
+  const kpiEl = document.getElementById('transitInvKpi');
+  if (kpiEl && Object.keys(transitData).length > 0) {
+    const hasDB = productDB && Object.keys(productDB).length > 0;
+    const fmtJpy = v => '¥' + Math.round(v).toLocaleString('ja-JP');
+    let totalSalesVal = 0, matched = 0, unmatched = 0;
+    for (const [sku, qty] of Object.entries(transitData)) {
+      let price = 0;
+      if (hasDB && productDB[sku]) {
+        price = productDB[sku].price || 0; matched++;
+      } else if (zozoData && zozoData[sku]) {
+        price = zozoData[sku].current_price || 0; matched++;
+      } else { unmatched++; }
+      totalSalesVal += qty * price;
+    }
+    const totalCostVal = totalSalesVal * 0.30;
+    const matchNote = unmatched > 0
+      ? `<span style="color:#f59e0b;">（${matched}件マッチ / ${unmatched}件未マッチ）</span>`
+      : `<span style="color:#059669;">全${matched}件マッチ</span>`;
+    const noDbNote = !hasDB
+      ? `<div style="font-size:11px;color:#d97706;margin-top:6px;">⚠️ 商品マスターDBを登録するとプロパー価格から自動計算されます</div>`
+      : '';
+    kpiEl.style.display = 'block';
+    kpiEl.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:4px;">💰 輸送中 総販売価格</div>
+          <div style="font-size:20px;font-weight:800;color:#1e40af;">${fmtJpy(totalSalesVal)}</div>
+          <div style="font-size:10px;color:#6b7280;margin-top:3px;">プロパー価格 × 合計数量 ${matchNote}</div>
+          ${noDbNote}
+        </div>
+        <div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #fbbf24;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;color:#d97706;margin-bottom:4px;">📦 輸送中 総在庫原価</div>
+          <div style="font-size:20px;font-weight:800;color:#b45309;">${fmtJpy(totalCostVal)}</div>
+          <div style="font-size:10px;color:#6b7280;margin-top:3px;">総販売価格 × 30%</div>
+        </div>
+      </div>`;
+  } else if (kpiEl) {
+    kpiEl.style.display = 'none';
+  }
 }
 // ===== 商品画像管理 =====
 function handleImageFiles(files) {
@@ -4665,6 +4719,29 @@ function runRankAnalysis() {
     { rank:'B', label:'📦 B ランク', sub:'売れていない',      color:'#d97706', border:'#f59e0b', bg:'#fffbeb', count:groups.B.length },
     { rank:'C', label:'💤 C ランク', sub:'全然売れていない',  color:'#9ca3af', border:'#e5e7eb', bg:'#f9fafb', count:groups.C.length },
   ];
+  // 在庫価格KPI（総販売価格・総在庫原価）
+  const kpiEl = document.getElementById('rankInventoryKpi');
+  if (kpiEl) {
+    let totalSalesVal = 0;
+    for (const d of Object.values(zozoData)) {
+      totalSalesVal += (d.zozo_stock || 0) * (d.current_price || 0);
+    }
+    const totalCostVal = Math.round(totalSalesVal * 0.30);
+    const fmtJpy = v => '¥' + Math.round(v).toLocaleString('ja-JP');
+    kpiEl.style.display = 'grid';
+    kpiEl.innerHTML = `
+      <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:6px;">💰 総販売価格</div>
+        <div style="font-size:26px;font-weight:800;color:#1e40af;line-height:1.1;">${fmtJpy(totalSalesVal)}</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:4px;">プロパー価格 × 販売可能数 の合計</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #fbbf24;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:12px;font-weight:700;color:#d97706;margin-bottom:6px;">📦 総在庫原価</div>
+        <div style="font-size:26px;font-weight:800;color:#b45309;line-height:1.1;">${fmtJpy(totalCostVal)}</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:4px;">総販売価格 × 30%</div>
+      </div>`;
+  }
+
   document.getElementById('rankSummary').innerHTML = summaries.map(s => `
     <div style="background:${s.bg};border:2px solid ${s.border};border-radius:10px;padding:14px 16px;text-align:center;">
       <div style="font-size:13px;font-weight:700;color:${s.color};margin-bottom:4px;">${s.label}</div>
@@ -7130,7 +7207,107 @@ const STOCKTAKE = (() => {
     ].join('');
   }
 
-  return { init, load, updateCalc, saveRecord, editRecord, deleteRecord, cancelEdit, switchTab };
+  // ---- 中国発送前在庫 XLSアップロード自動計算 ----
+  function loadChinaInv(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById('stk-china-status');
+    const setStatus = (msg, color) => {
+      if (!statusEl) return;
+      statusEl.style.display = '';
+      statusEl.style.color = color || '#6b7280';
+      statusEl.textContent = msg;
+    };
+    setStatus('⏳ 読み込み中...', '#6b7280');
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'array' });
+        // 「お客様商品SKU」列を含むシートを探す
+        let rows = null;
+        for (const sn of wb.SheetNames) {
+          const r = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, defval: '' });
+          if (r.length > 0 && r[0].some(v => String(v).includes('お客様商品SKU'))) {
+            rows = r; break;
+          }
+        }
+        if (!rows) {
+          // シートが見つからない場合は最初のシートを試す
+          rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' });
+        }
+        if (!rows || rows.length < 2) {
+          setStatus('❌ データが見つかりません', '#dc2626'); return;
+        }
+
+        // ヘッダー行からカラムインデックスを取得
+        const hdr = rows[0].map(v => String(v).trim());
+        const skuCol   = hdr.findIndex(h => h.includes('お客様商品SKU'));
+        const totalCol = hdr.findIndex(h => h === '合計' || h.includes('合計'));
+        if (skuCol < 0 || totalCol < 0) {
+          setStatus(`❌ 必要な列が見つかりません（お客様商品SKU: ${skuCol>=0?'✓':'✗'}, 合計: ${totalCol>=0?'✓':'✗'}）`, '#dc2626');
+          return;
+        }
+
+        // 商品DBがあるか確認
+        const hasDB = productDB && Object.keys(productDB).length > 0;
+        let totalCost = 0;
+        let matched = 0, unmatched = 0, totalQty = 0;
+        const unmatchedSkus = [];
+
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const sku = String(row[skuCol] || '').trim();
+          const qty = parseInt(String(row[totalCol] || '0').replace(/[^0-9]/g, '')) || 0;
+          if (!sku || qty === 0) continue;
+          totalQty += qty;
+
+          // productDBから販売価格を取得
+          let price = 0;
+          if (hasDB) {
+            const dbEntry = productDB[sku];
+            if (dbEntry) {
+              price = dbEntry.price || 0;
+              matched++;
+            } else {
+              // ZOZOデータからも探す
+              if (zozoData && zozoData[sku]) {
+                price = zozoData[sku].current_price || 0;
+                matched++;
+              } else {
+                unmatched++;
+                if (unmatchedSkus.length < 5) unmatchedSkus.push(sku);
+              }
+            }
+          }
+          totalCost += qty * price * 0.30;
+        }
+
+        // 入力フィールドに自動セット
+        const chinaEl = document.getElementById('stk-inv-china');
+        if (chinaEl) {
+          chinaEl.value = Math.round(totalCost);
+          updateCalc();
+        }
+
+        const costStr = '¥' + Math.round(totalCost).toLocaleString('ja-JP');
+        if (!hasDB) {
+          setStatus(`⚠️ 商品マスターDB未登録のため金額計算不可。数量合計: ${totalQty}点。先に商品マスターDBを登録してください。`, '#d97706');
+        } else if (unmatched > 0) {
+          setStatus(`✅ 計算完了: ${costStr}（${matched}件マッチ / ${unmatched}件未マッチ — ${unmatchedSkus.join(', ')}${unmatched>5?'..':''}）`, '#059669');
+        } else {
+          setStatus(`✅ 計算完了: ${costStr}（全${matched}件マッチ / 数量合計 ${totalQty}点）`, '#059669');
+        }
+        // ファイル入力をリセット（同じファイルを再選択できるよう）
+        event.target.value = '';
+      } catch(err) {
+        setStatus('❌ ファイル読み込みエラー: ' + err.message, '#dc2626');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  return { init, load, updateCalc, saveRecord, editRecord, deleteRecord, cancelEdit, switchTab, loadChinaInv };
 })();
 </script>
 </body>
